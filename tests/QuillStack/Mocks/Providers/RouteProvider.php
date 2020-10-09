@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace QuillStack\Mocks\Providers;
 
-use QuillStack\Framework\RouteProviderInterface;
+use QuillStack\Framework\Interfaces\RouteProviderInterface;
 use QuillStack\Mocks\Controllers\VersionController;
 use QuillStack\Router\Router;
 

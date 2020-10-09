@@ -14,6 +14,14 @@ use QuillStack\Http\Uri\Factory\UriFactory;
 final class App
 {
     /**
+     * @var array
+     */
+    private const DEFAULT_CONFIG = [
+        StreamInterface::class => InputStream::class,
+        UriFactoryInterface::class => UriFactory::class,
+    ];
+
+    /**
      * @var Container
      */
     private Container $container;
@@ -23,10 +31,9 @@ final class App
      */
     public function __construct(array $config = [])
     {
-        $this->container = new Container(array_merge($config, [
-            StreamInterface::class => InputStream::class,
-            UriFactoryInterface::class => UriFactory::class,
-        ]));
+        $config = array_merge(self::DEFAULT_CONFIG, $config);
+
+        $this->container = new Container($config);
     }
 
     /**

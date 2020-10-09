@@ -6,8 +6,7 @@ namespace QuillStack\Framework\App;
 
 use Psr\Http\Message\ResponseInterface;
 use QuillStack\DI\Container;
-use QuillStack\Framework\Providers\RouteProvider;
-use QuillStack\Framework\RouteProviderInterface;
+use QuillStack\Framework\Interfaces\RouteProviderInterface;
 use QuillStack\Http\Request\Factory\ServerRequest\RequestFromGlobalsFactory;
 use QuillStack\Router\Dispatcher;
 use QuillStack\Router\Router;

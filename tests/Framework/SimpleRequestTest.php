@@ -6,7 +6,7 @@ namespace Framework;
 
 use PHPUnit\Framework\TestCase;
 use QuillStack\Framework\App;
-use QuillStack\Framework\RouteProviderInterface;
+use QuillStack\Framework\Interfaces\RouteProviderInterface;
 use QuillStack\Mocks\Providers\RouteProvider;
 
 final class SimpleRequestTest extends TestCase
