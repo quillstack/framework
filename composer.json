@@ -1,0 +1,43 @@
+{
+    "name": "quillstack/framework",
+    "description": "The Quill Framework, a light and simple micro-framework to build the API.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "framework",
+        "php",
+        "micro-framework",
+        "psr",
+        "psr-7",
+        "psr-11",
+        "psr-15",
+        "php7",
+        "api",
+        "micro-service"
+    ],
+    "homepage": "http://quillstack.com/framework",
+    "authors": [
+        {
+            "name": "Radek Ziemniewicz",
+            "email": "open-source@quillstack.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4",
+        "quillstack/http": "^1.0",
+        "quillstack/di": "^1.4",
+        "quillstack/router": "^1.0",
+        "psr/http-server-handler": "^1.0",
+        "psr/http-server-middleware": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "QuillStack\\Framework\\": "src/QuillStack/Framework/",
+            "QuillStack\\Mocks\\": "tests/QuillStack/Mocks/"
+        }
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^5.1",
+        "phpunit/phpunit": "^9"
+    }
+}
