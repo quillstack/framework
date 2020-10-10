@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace QuillStack\Framework\Interfaces;
 
-use Psr\Http\Server\RequestHandlerInterface;
+use QuillStack\Http\Response\ResponseInterface;
 
-interface ControllerInterface extends RequestHandlerInterface
+interface ControllerInterface
 {
+    /**
+     * @return ResponseInterface
+     */
+    public function handle(): ResponseInterface;
 }

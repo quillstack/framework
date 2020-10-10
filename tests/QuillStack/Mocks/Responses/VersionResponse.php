@@ -9,12 +9,29 @@ use QuillStack\Http\Response\Response;
 final class VersionResponse extends Response
 {
     /**
+     * @var string
+     */
+    private string $version = '';
+
+    /**
+     * @param string $version
+     *
+     * @return $this
+     */
+    public function setVersion(string $version): self
+    {
+        $this->version = $version;
+
+        return $this;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function send(): array
     {
         return [
-            'version' => '1.0.0',
+            'version' => $this->version,
         ];
     }
 }

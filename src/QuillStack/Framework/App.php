@@ -8,6 +8,8 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use QuillStack\DI\Container;
 use QuillStack\Framework\App\Kernel;
+use QuillStack\Framework\InstanceFactories\RequestClassFactory;
+use QuillStack\Framework\Interfaces\RequestInterface;
 use QuillStack\Http\Stream\InputStream;
 use QuillStack\Http\Uri\Factory\UriFactory;
 
@@ -19,6 +21,7 @@ final class App
     private const DEFAULT_CONFIG = [
         StreamInterface::class => InputStream::class,
         UriFactoryInterface::class => UriFactory::class,
+        RequestInterface::class => RequestClassFactory::class,
     ];
 
     /**
@@ -31,9 +34,9 @@ final class App
      */
     public function __construct(array $config = [])
     {
-        $config = array_merge(self::DEFAULT_CONFIG, $config);
-
-        $this->container = new Container($config);
+        $this->container = new Container(
+            array_merge(self::DEFAULT_CONFIG, $config)
+        );
     }
 
     /**

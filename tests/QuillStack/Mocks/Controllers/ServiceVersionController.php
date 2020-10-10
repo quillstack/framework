@@ -7,8 +7,9 @@ namespace QuillStack\Mocks\Controllers;
 use QuillStack\Framework\Interfaces\ControllerInterface;
 use QuillStack\Mocks\Requests\VersionRequest;
 use QuillStack\Mocks\Responses\VersionResponse;
+use QuillStack\Mocks\Services\VersionService;
 
-final class VersionController implements ControllerInterface
+final class ServiceVersionController implements ControllerInterface
 {
     /**
      * @var VersionResponse
@@ -21,10 +22,17 @@ final class VersionController implements ControllerInterface
     public VersionRequest $request;
 
     /**
+     * @var VersionService
+     */
+    public VersionService $versionService;
+
+    /**
      * {@inheritDoc}
      */
     public function handle(): VersionResponse
     {
-        return $this->response->setVersion('1.0.0');
+        return $this->response->setVersion(
+            $this->versionService->getVersion()
+        );
     }
 }
