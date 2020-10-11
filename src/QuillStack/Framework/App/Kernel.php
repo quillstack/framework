@@ -10,6 +10,7 @@ use QuillStack\DI\Container;
 use QuillStack\Framework\Http\Controllers\NotFoundController;
 use QuillStack\Framework\Decorators\DecoratingRequestHandler;
 use QuillStack\Framework\Interfaces\RouteProviderInterface;
+use QuillStack\Framework\Middleware\AuthorizationMiddleware;
 use QuillStack\Framework\Middleware\RoutingMiddleware;
 use QuillStack\Http\Request\Factory\ServerRequest\RequestFromGlobalsFactory;
 use QuillStack\Router\Dispatcher;
@@ -35,17 +36,18 @@ final class Kernel
     /**
      * @var array
      */
-    private array $middleware = [
-        RoutingMiddleware::class,
-    ];
+    private array $middleware = [];
 
     /**
      * @param Container $container
+     * @param array $middleware
      *
      * @return ResponseInterface
      */
-    public function boot(Container $container): ResponseInterface
+    public function boot(Container $container, array $middleware): ResponseInterface
     {
+        $this->middleware = array_merge(Config::DEFAULT_MIDDLEWARE, $middleware);
+
         $this->loadRoutes($container);
         $handler = $this->buildMiddlewareLayers($container);
 
@@ -75,7 +77,11 @@ final class Kernel
 
         foreach ($this->middleware as $middlewareClass) {
             $middleware = $container->get($middlewareClass);
-            $middleware->container = $container;
+
+            if (isset($middleware->container)) {
+                $middleware->container = $container;
+            }
+
             $handler = new DecoratingRequestHandler($middleware, $nextHandler);
             $nextHandler = $handler;
         }

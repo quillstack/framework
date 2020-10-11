@@ -16,10 +16,17 @@ final class App
     private Container $container;
 
     /**
-     * @param array $config
+     * @var array
      */
-    public function __construct(array $config = [])
+    private array $middleware;
+
+    /**
+     * @param array $config
+     * @param array $middleware
+     */
+    public function __construct(array $config = [], array $middleware = [])
     {
+        $this->middleware = $middleware;
         $this->container = new Container(
             array_merge(Config::DEFAULT_CONFIG, $config)
         );
@@ -31,7 +38,7 @@ final class App
     public function run(): string
     {
         $kernel = $this->container->get(Kernel::class);
-        $response = $kernel->boot($this->container);
+        $response = $kernel->boot($this->container, $this->middleware);
 
         return json_encode($response);
     }

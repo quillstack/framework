@@ -14,11 +14,6 @@ use QuillStack\Router\Dispatcher;
 final class RoutingMiddleware implements MiddlewareInterface
 {
     /**
-     * @var Dispatcher
-     */
-    public Dispatcher $dispatcher;
-
-    /**
      * @var Container
      */
     public Container $container;
@@ -28,15 +23,16 @@ final class RoutingMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $route = $this->dispatcher->dispatch($request);
+        $dispatcher = $this->container->get(Dispatcher::class);
+        $route = $dispatcher->dispatch($request);
 
-        if ($route->isSuccess()) {
-            $handler = $this->container->get(
-                $route->getController()
-            );
-
+        if (!$route->isSuccess()) {
             return $handler->handle($request);
         }
+
+        $handler = $this->container->get(
+            $route->getController()
+        );
 
         return $handler->handle($request);
     }

@@ -14,12 +14,12 @@ final class DecoratingRequestHandler implements RequestHandlerInterface
     /**
      * @var MiddlewareInterface
      */
-    private MiddlewareInterface $middleware;
+    public MiddlewareInterface $middleware;
 
     /**
      * @var RequestHandlerInterface
      */
-    private RequestHandlerInterface $nextHandler;
+    public RequestHandlerInterface $nextHandler;
 
     /**
      * @param MiddlewareInterface $middleware

@@ -9,6 +9,8 @@ use Psr\Http\Message\UriFactoryInterface;
 use Psr\Log\LoggerInterface;
 use QuillStack\Framework\InstanceFactories\RequestClassFactory;
 use QuillStack\Framework\Interfaces\RequestInterface;
+use QuillStack\Framework\Middleware\AuthorizationMiddleware;
+use QuillStack\Framework\Middleware\RoutingMiddleware;
 use QuillStack\Http\Stream\InputStream;
 use QuillStack\Http\Uri\Factory\UriFactory;
 use QuillStack\MonologFactory\FileLoggerClassFactory;
@@ -23,5 +25,13 @@ final class Config
         UriFactoryInterface::class => UriFactory::class,
         RequestInterface::class => RequestClassFactory::class,
         LoggerInterface::class => FileLoggerClassFactory::class,
+    ];
+
+    /**
+     * @var array
+     */
+    public const DEFAULT_MIDDLEWARE = [
+        AuthorizationMiddleware::class,
+        RoutingMiddleware::class,
     ];
 }
