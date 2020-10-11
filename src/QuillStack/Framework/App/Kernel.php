@@ -8,10 +8,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use QuillStack\DI\Container;
 use QuillStack\Framework\Http\Controllers\NotFoundController;
-use QuillStack\Framework\Decorators\DecoratingRequestHandler;
 use QuillStack\Framework\Interfaces\RouteProviderInterface;
-use QuillStack\Framework\Middleware\AuthorizationMiddleware;
-use QuillStack\Framework\Middleware\RoutingMiddleware;
+use QuillStack\Framework\Providers\MiddlewareProvider;
 use QuillStack\Http\Request\Factory\ServerRequest\RequestFromGlobalsFactory;
 use QuillStack\Router\Dispatcher;
 use QuillStack\Router\Router;
@@ -46,10 +44,10 @@ final class Kernel
      */
     public function boot(Container $container, array $middleware): ResponseInterface
     {
-        $this->middleware = array_merge(Config::DEFAULT_MIDDLEWARE, $middleware);
+        $this->middleware = array_reverse(array_merge(Config::DEFAULT_MIDDLEWARE, $middleware));
 
         $this->loadRoutes($container);
-        $handler = $this->buildMiddlewareLayers($container);
+        $handler = $this->buildHandlerWithMiddleware($container);
 
         // Handle request.
         return $handler->handle(
@@ -71,9 +69,11 @@ final class Kernel
      *
      * @return RequestHandlerInterface
      */
-    private function buildMiddlewareLayers(Container $container): RequestHandlerInterface
+    private function buildHandlerWithMiddleware(Container $container): RequestHandlerInterface
     {
-        $handler = $nextHandler = $container->get(NotFoundController::class);
+        $middlewareProvider = new MiddlewareProvider(
+            $container->get(NotFoundController::class)
+        );
 
         foreach ($this->middleware as $middlewareClass) {
             $middleware = $container->get($middlewareClass);
@@ -82,10 +82,9 @@ final class Kernel
                 $middleware->container = $container;
             }
 
-            $handler = new DecoratingRequestHandler($middleware, $nextHandler);
-            $nextHandler = $handler;
+            $middlewareProvider->add($middleware);
         }
 
-        return $handler;
+        return $middlewareProvider;
     }
 }

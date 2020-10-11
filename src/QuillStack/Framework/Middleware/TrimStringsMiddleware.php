@@ -9,7 +9,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-final class AuthorizationMiddleware implements MiddlewareInterface
+final class TrimStringsMiddleware implements MiddlewareInterface
 {
     /**
      * {@inheritDoc}
