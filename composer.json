@@ -30,7 +30,8 @@
         "quillstack/di": "^1.5.0",
         "quillstack/response": "^1.0.2",
         "quillstack/request": "^1.0.5",
-        "quillstack/router": "^1.0.3"
+        "quillstack/router": "^1.0.3",
+        "quillstack/monolog-factory": "^1.0"
     },
     "autoload": {
         "psr-4": {
