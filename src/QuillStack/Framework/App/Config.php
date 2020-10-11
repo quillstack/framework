@@ -24,5 +24,4 @@ final class Config
         RequestInterface::class => RequestClassFactory::class,
         LoggerInterface::class => FileLoggerClassFactory::class,
     ];
-
 }
