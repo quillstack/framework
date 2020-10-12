@@ -87,7 +87,7 @@ final class Kernel
             $this->container->get(NotFoundController::class)
         );
 
-        array_walk($this->middleware, fn($class) => $this->addMiddleware($middlewareProvider, $class));
+        array_walk($this->middleware, fn ($class) => $this->addMiddleware($middlewareProvider, $class));
 
         return $middlewareProvider;
     }
@@ -112,10 +112,11 @@ final class Kernel
      */
     private function loadHeaders(array $headers): void
     {
+        // We don't want to send HTTP headers in console.
         if (defined('STDIN')) {
             return;
         }
 
-        array_walk($headers, fn(&$header, $name) => header("{$name}: {$header}"));
+        array_walk($headers, fn (&$header, $name) => header("{$name}: {$header}"));
     }
 }
