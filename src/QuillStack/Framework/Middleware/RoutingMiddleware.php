@@ -34,6 +34,6 @@ final class RoutingMiddleware implements MiddlewareInterface
             $route->getController()
         );
 
-        return $controller->handle($request);
+        return $controller->handle($controller->request ?? $request);
     }
 }
