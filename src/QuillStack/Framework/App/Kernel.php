@@ -87,7 +87,9 @@ final class Kernel
             $this->container->get(NotFoundController::class)
         );
 
-        array_walk($this->middleware, fn ($class) => $this->addMiddleware($middlewareProvider, $class));
+        foreach ($this->middleware as $class) {
+            $this->addMiddleware($middlewareProvider, $class);
+        }
 
         return $middlewareProvider;
     }
@@ -98,13 +100,13 @@ final class Kernel
      */
     private function addMiddleware(MiddlewareProvider &$middlewareProvider, string $middlewareClass): void
     {
-        $middleware = $this->container->get($middlewareClass);
+        $middlewareInstance = $this->container->get($middlewareClass);
 
-        if (isset($middleware->container)) {
-            $middleware->container = $this->container;
+        if (isset($middlewareInstance->container)) {
+            $middlewareInstance->container = $this->container;
         }
 
-        $middlewareProvider->add($middleware);
+        $middlewareProvider->add($middlewareInstance);
     }
 
     /**
@@ -117,6 +119,8 @@ final class Kernel
             return;
         }
 
-        array_walk($headers, fn (&$header, $name) => header("{$name}: {$header}"));
+        foreach ($headers as $name => $header) {
+            header("{$name}: {$header}");
+        }
     }
 }

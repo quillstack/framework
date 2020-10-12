@@ -46,8 +46,8 @@ final class MiddlewareProvider implements RequestHandlerInterface
             return $this->fallbackHandler->handle($request);
         }
 
-        $middleware = array_shift($this->middleware);
+        $currentMiddleware = array_shift($this->middleware);
 
-        return $middleware->process($request, $this);
+        return $currentMiddleware->process($request, $this);
     }
 }
