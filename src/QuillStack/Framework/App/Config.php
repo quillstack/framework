@@ -10,6 +10,7 @@ use Psr\Log\LoggerInterface;
 use QuillStack\Framework\InstanceFactories\RequestClassFactory;
 use QuillStack\Framework\Interfaces\RequestInterface;
 use QuillStack\Framework\Middleware\AuthorizationMiddleware;
+use QuillStack\Framework\Middleware\JsonResponseMiddleware;
 use QuillStack\Framework\Middleware\RoutingMiddleware;
 use QuillStack\Framework\Middleware\TrimStringsMiddleware;
 use QuillStack\Http\Stream\InputStream;
@@ -33,6 +34,7 @@ final class Config
      */
     public const DEFAULT_MIDDLEWARE = [
         RoutingMiddleware::class,
+        JsonResponseMiddleware::class,
         TrimStringsMiddleware::class,
         AuthorizationMiddleware::class,
     ];
