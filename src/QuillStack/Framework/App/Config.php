@@ -9,12 +9,12 @@ use Psr\Http\Message\UriFactoryInterface;
 use Psr\Log\LoggerInterface;
 use QuillStack\Framework\InstanceFactories\RequestClassFactory;
 use QuillStack\Framework\Interfaces\RequestInterface;
-use QuillStack\Framework\Middleware\AuthorizationMiddleware;
-use QuillStack\Framework\Middleware\JsonResponseMiddleware;
-use QuillStack\Framework\Middleware\RoutingMiddleware;
-use QuillStack\Framework\Middleware\TrimStringsMiddleware;
 use QuillStack\Http\Stream\InputStream;
 use QuillStack\Http\Uri\Factory\UriFactory;
+use QuillStack\Middleware\Defaults\AuthorizationMiddleware;
+use QuillStack\Middleware\Defaults\JsonResponseMiddleware;
+use QuillStack\Middleware\Defaults\RoutingMiddleware;
+use QuillStack\Middleware\Defaults\TrimStringsMiddleware;
 use QuillStack\MonologFactory\FileLoggerClassFactory;
 
 final class Config

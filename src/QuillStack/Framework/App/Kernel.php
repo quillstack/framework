@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace QuillStack\Framework\App;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use QuillStack\DI\Container;
 use QuillStack\Framework\Http\Controllers\NotFoundController;
 use QuillStack\Framework\Interfaces\RouteProviderInterface;
-use QuillStack\Framework\Providers\MiddlewareProvider;
 use QuillStack\Http\Request\Factory\ServerRequest\RequestFromGlobalsFactory;
+use QuillStack\Middleware\MiddlewareBuilder;
 use QuillStack\Router\Dispatcher;
 use QuillStack\Router\Router;
 
@@ -37,11 +36,6 @@ final class Kernel
     public Router $router;
 
     /**
-     * @var array
-     */
-    private array $middleware = [];
-
-    /**
      * @param Container $container
      * @param array $middleware
      *
@@ -54,9 +48,13 @@ final class Kernel
         // Load all routes.
         $this->loadRoutes();
 
-        // Include all middleware classes.
-        $this->middleware = array_reverse(array_merge(Config::DEFAULT_MIDDLEWARE, $middleware));
-        $handler = $this->buildHandlerWithMiddleware();
+        // Load all middleware.
+        $middlewareBuilder = $this->loadMiddleware($middleware);
+
+        // Get handler.
+        $handler = $middlewareBuilder->build(
+            $this->container->get(NotFoundController::class)
+        );
 
         // Handle request.
         $response = $handler->handle(
@@ -79,37 +77,6 @@ final class Kernel
     }
 
     /**
-     * @return RequestHandlerInterface
-     */
-    private function buildHandlerWithMiddleware(): RequestHandlerInterface
-    {
-        $middlewareProvider = new MiddlewareProvider(
-            $this->container->get(NotFoundController::class)
-        );
-
-        foreach ($this->middleware as $class) {
-            $this->addMiddleware($middlewareProvider, $class);
-        }
-
-        return $middlewareProvider;
-    }
-
-    /**
-     * @param MiddlewareProvider $middlewareProvider
-     * @param string $middlewareClass
-     */
-    private function addMiddleware(MiddlewareProvider &$middlewareProvider, string $middlewareClass): void
-    {
-        $middlewareInstance = $this->container->get($middlewareClass);
-
-        if (isset($middlewareInstance->container)) {
-            $middlewareInstance->container = $this->container;
-        }
-
-        $middlewareProvider->add($middlewareInstance);
-    }
-
-    /**
      * @param array $headers
      */
     private function loadHeaders(array $headers): void
@@ -122,5 +89,21 @@ final class Kernel
         foreach ($headers as $name => $header) {
             header("{$name}: {$header}");
         }
+    }
+
+    /**
+     * @param array $middleware
+     *
+     * @return MiddlewareBuilder
+     */
+    private function loadMiddleware(array $middleware): MiddlewareBuilder
+    {
+        $middlewareBuilder = new MiddlewareBuilder(
+            array_reverse(array_merge(Config::DEFAULT_MIDDLEWARE, $middleware))
+        );
+
+        $middlewareBuilder->container = $this->container;
+
+        return $middlewareBuilder;
     }
 }
