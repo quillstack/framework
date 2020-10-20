@@ -19,13 +19,13 @@ final class SimpleRequestTest extends TestCase
         $_SERVER['SERVER_PROTOCOL'] = '1.1';
 
         // Create App instance with config.
-        $app = new App([
+        $app = new App('', [
             RouteProviderInterface::class => RouteProvider::class,
         ]);
 
         // Run app.
         $response = $app->run();
 
-        $this->assertEquals('{"version":"1.0.0"}', $response);
+        $this->assertEquals('{"version":"1.0.0"}', json_encode($response));
     }
 }

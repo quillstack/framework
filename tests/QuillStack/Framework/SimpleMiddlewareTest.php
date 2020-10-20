@@ -2,30 +2,33 @@
 
 declare(strict_types=1);
 
-namespace Framework;
+namespace QuillStack\Framework;
 
-use PHPUnit\Framework\TestCase;
-use QuillStack\Framework\App;
+use Monolog\Test\TestCase;
 use QuillStack\Framework\Interfaces\RouteProviderInterface;
+use QuillStack\Mocks\Middleware\TestMiddleware;
 use QuillStack\Mocks\Providers\RouteProvider;
 
-final class SimpleServiceTest extends TestCase
+final class SimpleMiddlewareTest extends TestCase
 {
-    public function testSimpleRequest()
+    public function testMiddleware()
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['HTTP_HOST'] = 'localhost';
-        $_SERVER['REQUEST_URI'] = '/version/service';
+        $_SERVER['REQUEST_URI'] = '/version';
         $_SERVER['SERVER_PROTOCOL'] = '1.1';
 
         // Create App instance with config.
         $app = new App('', [
             RouteProviderInterface::class => RouteProvider::class,
+        ], [
+            TestMiddleware::class,
         ]);
 
         // Run app.
         $response = $app->run();
 
-        $this->assertEquals('{"version":"1.0.1"}', json_encode($response));
+        $this->assertEquals('{"version":"1.0.0"}', json_encode($response));
+        $this->assertEquals('middleware', $response->getHeaderLine('test'));
     }
 }

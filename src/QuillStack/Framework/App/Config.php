@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace QuillStack\Framework\App;
 
+use Monolog\Logger;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Log\LoggerInterface;
@@ -22,7 +23,17 @@ final class Config
     /**
      * @var array
      */
-    public const DEFAULT_CONFIG = [
+    public const DEFAULT_MIDDLEWARE = [
+        RoutingMiddleware::class,
+        JsonResponseMiddleware::class,
+        TrimStringsMiddleware::class,
+        AuthorizationMiddleware::class,
+    ];
+
+    /**
+     * @var array
+     */
+    private array $defaultConfig = [
         StreamInterface::class => InputStream::class,
         UriFactoryInterface::class => UriFactory::class,
         RequestInterface::class => RequestClassFactory::class,
@@ -30,12 +41,36 @@ final class Config
     ];
 
     /**
+     * @var string
+     */
+    public string $root;
+
+    /**
      * @var array
      */
-    public const DEFAULT_MIDDLEWARE = [
-        RoutingMiddleware::class,
-        JsonResponseMiddleware::class,
-        TrimStringsMiddleware::class,
-        AuthorizationMiddleware::class,
-    ];
+    private array $envConfig;
+
+    /**
+     * Config constructor.
+     */
+    public function __construct()
+    {
+        $this->root = dirname(__FILE__) . '/../../../../../../../';
+        $this->envConfig = [
+            FileLoggerClassFactory::class => [
+                'level' => Logger::toMonologLevel(env('APP_LOG_LEVEL', 'warning')),
+                'path' => "{$this->root}var/logs/" . env('APP_LOG_FILENAME', 'quillstack.log'),
+            ],
+        ];
+    }
+
+    /**
+     * @param array $config
+     *
+     * @return array
+     */
+    public function get(array $config): array
+    {
+        return array_merge($this->defaultConfig, $this->envConfig, $config);
+    }
 }

@@ -19,13 +19,13 @@ final class NotFoundTest extends TestCase
         $_SERVER['SERVER_PROTOCOL'] = '1.1';
 
         // Create App instance with config.
-        $app = new App([
+        $app = new App('', [
             RouteProviderInterface::class => RouteProvider::class,
         ]);
 
         // Run app.
         $response = $app->run();
 
-        $this->assertEquals('[]', $response);
+        $this->assertEquals('[]', json_encode($response));
     }
 }

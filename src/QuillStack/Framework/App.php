@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace QuillStack\Framework;
 
+use Psr\Http\Message\ResponseInterface;
 use QuillStack\DI\Container;
+use QuillStack\Dotenv\Dotenv;
 use QuillStack\Framework\App\Config;
 use QuillStack\Framework\App\Kernel;
 
@@ -13,7 +15,7 @@ final class App
     /**
      * @var Container
      */
-    private Container $container;
+    public Container $container;
 
     /**
      * @var array
@@ -21,25 +23,58 @@ final class App
     private array $middleware;
 
     /**
+     * @param string $envPath
      * @param array $config
      * @param array $middleware
      */
-    public function __construct(array $config = [], array $middleware = [])
+    public function __construct(string $envPath = '', array $config = [], array $middleware = [])
     {
+        $configWithEnv = $this->getConfigWithEnvPath($envPath, $config);
+        $this->loadEnvIfRequired($configWithEnv);
         $this->middleware = $middleware;
         $this->container = new Container(
-            array_merge(Config::DEFAULT_CONFIG, $config)
+            (new Config())->get($configWithEnv)
         );
     }
 
     /**
-     * @return string
+     * @param string $envPath
+     * @param array $config
+     *
+     * @return array
      */
-    public function run(): string
+    private function getConfigWithEnvPath(string $envPath, array $config = []): array
+    {
+        if (empty($envPath)) {
+            return $config;
+        }
+
+        return array_merge([
+            Dotenv::class => [
+                'path' => $envPath,
+            ],
+        ], $config);
+    }
+
+    /**
+     * @param array $configWithEnv
+     */
+    private function loadEnvIfRequired(array $configWithEnv = []): void
+    {
+        $container = new Container(
+            (new Config())->get($configWithEnv)
+        );
+        $dotenv = $container->get(Dotenv::class);
+        $dotenv->load();
+    }
+
+    /**
+     * @return ResponseInterface
+     */
+    public function run(): ResponseInterface
     {
         $kernel = $this->container->get(Kernel::class);
-        $response = $kernel->boot($this->container, $this->middleware);
 
-        return json_encode($response);
+        return $kernel->boot($this->container, $this->middleware);
     }
 }
