@@ -14,7 +14,7 @@ final class AppServiceTest extends TestCase
         $app = new App(
             dirname(__FILE__) . '/../../Fixtures/Dotenv/AppEnv/.env.prod'
         );
-        $appService = $app->container->get(AppService::class);
+        $appService = $app->container->get(AppEnvService::class);
 
         $this->assertTrue($appService->isProduction());
         $this->assertTrue($appService->isEnv('production'));

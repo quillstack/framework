@@ -6,7 +6,7 @@ namespace QuillStack\Framework\Services;
 
 use QuillStack\Framework\Exceptions\ArgumentTypeNotAllowedException;
 
-final class AppService
+final class AppEnvService
 {
     public const ENV_PRODUCTION = 'production';
     public const ENV_DEVELOP = 'develop';
