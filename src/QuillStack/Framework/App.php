@@ -33,7 +33,7 @@ final class App
         $this->loadEnvIfRequired($configWithEnv);
         $this->middleware = $middleware;
         $this->container = new Container(
-            (new Config())->get($configWithEnv)
+            (new Config())->loadEnv()->get($configWithEnv)
         );
     }
 

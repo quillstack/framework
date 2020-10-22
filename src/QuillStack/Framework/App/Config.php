@@ -8,8 +8,10 @@ use Monolog\Logger;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Log\LoggerInterface;
+use QuillStack\Config\ConfigProviderInterface;
 use QuillStack\Framework\InstanceFactories\RequestClassFactory;
 use QuillStack\Framework\Interfaces\RequestInterface;
+use QuillStack\Framework\Providers\ConfigProvider;
 use QuillStack\Http\Stream\InputStream;
 use QuillStack\Http\Uri\Factory\UriFactory;
 use QuillStack\Middleware\Defaults\AuthorizationMiddleware;
@@ -38,6 +40,7 @@ final class Config
         UriFactoryInterface::class => UriFactory::class,
         RequestInterface::class => RequestClassFactory::class,
         LoggerInterface::class => FileLoggerClassFactory::class,
+        ConfigProviderInterface::class => ConfigProvider::class,
     ];
 
     /**
@@ -48,7 +51,7 @@ final class Config
     /**
      * @var array
      */
-    private array $envConfig;
+    private array $envConfig = [];
 
     /**
      * Config constructor.
@@ -56,12 +59,21 @@ final class Config
     public function __construct()
     {
         $this->root = dirname(__FILE__) . '/../../../../../../../';
+    }
+
+    /**
+     * @return Config
+     */
+    public function loadEnv(): self
+    {
         $this->envConfig = [
             FileLoggerClassFactory::class => [
-                'level' => Logger::toMonologLevel(env('APP_LOG_LEVEL', 'warning')),
-                'path' => "{$this->root}var/logs/" . env('APP_LOG_FILENAME', 'quillstack.log'),
+                'level' => Logger::toMonologLevel(config('logger.level')),
+                'path' => "{$this->root}var/logs/" . config('logger.filename'),
             ],
         ];
+
+        return $this;
     }
 
     /**
