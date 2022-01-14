@@ -2,14 +2,11 @@
 
 declare(strict_types=1);
 
-namespace QuillStack\Framework\Interfaces;
+namespace Quillstack\Framework\Interfaces;
 
-use QuillStack\Router\Router;
+use Quillstack\Router\Router;
 
 interface RouteProviderInterface
 {
-    /**
-     * @param Router $router
-     */
     public function getRoutes(Router &$router): void;
 }

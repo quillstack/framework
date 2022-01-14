@@ -29,9 +29,9 @@
         "psr/http-server-middleware": "^1.0",
         "quillstack/di": "^0.0.8",
         "quillstack/response": "^0.0.2",
-        "quillstack/server-request": "^0.0.3",
-        "quillstack/router": "^0.0.2",
-        "quillstack/middleware": "^0.0.2",
+        "quillstack/server-request": "^0.0.4",
+        "quillstack/router": "^0.0.3",
+        "quillstack/middleware": "^0.0.3",
         "quillstack/dotenv": "^0.0.6",
         "quillstack/config": "^0.0.2"
     },

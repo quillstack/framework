@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace QuillStack\Framework\Config;
+namespace Quillstack\Framework\Config;
 
-use QuillStack\Config\Config;
+use Quillstack\Config\Config;
 
-final class LoggerConfig extends Config
+class LoggerConfig extends Config
 {
     public function __construct()
     {

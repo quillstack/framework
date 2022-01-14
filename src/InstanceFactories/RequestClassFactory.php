@@ -2,25 +2,19 @@
 
 declare(strict_types=1);
 
-namespace QuillStack\Framework\InstanceFactories;
+namespace Quillstack\Framework\InstanceFactories;
 
-use QuillStack\DI\Container;
-use QuillStack\DI\CustomFactoryInterface;
-use QuillStack\Http\Request\Factory\ServerRequest\GivenRequestFromGlobalsFactory;
+use Quillstack\DI\Container;
+use Quillstack\DI\CustomFactoryInterface;
+use Quillstack\ServerRequest\Factory\ServerRequest\GivenServerRequestFromGlobalsFactory;
 
-final class RequestClassFactory implements CustomFactoryInterface
+class RequestClassFactory implements CustomFactoryInterface
 {
-    /**
-     * @var Container
-     */
     private Container $container;
 
-    /**
-     * {@inheritDoc}
-     */
-    public function create(string $id)
+    public function create(string $id): self
     {
-        $factory = $this->container->get(GivenRequestFromGlobalsFactory::class);
+        $factory = $this->container->get(GivenServerRequestFromGlobalsFactory::class);
 
         return $factory->createGivenServerRequest($id);
     }

@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace QuillStack\Framework\Exceptions;
+namespace Quillstack\Framework\Exceptions;
 
-use QuillStack\Framework\QuillstackException;
+use Quillstack\Framework\QuillstackException;
 
-final class ArgumentTypeNotAllowedException extends QuillstackException
+class ArgumentTypeNotAllowedException extends QuillstackException
 {
+    //
 }

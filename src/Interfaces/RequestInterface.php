@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace QuillStack\Framework\Interfaces;
+namespace Quillstack\Framework\Interfaces;
 
 interface RequestInterface
 {
+    //
 }

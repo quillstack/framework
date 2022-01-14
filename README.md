@@ -10,7 +10,6 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=quillstack_framework&metric=coverage)](https://sonarcloud.io/dashboard?id=quillstack_framework)
 ![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/quillstack/framework)
 ![Packagist License](https://img.shields.io/packagist/l/quillstack/framework)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/quillstack/framework/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/quillstack/framework/?branch=main)
 
 The Quillstack Framework, a light and simple micro-framework to build
 the API.

@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace QuillStack\Framework\Http\Responses;
+namespace Quillstack\Framework\Http\Responses;
 
-use QuillStack\Http\Response\Response;
+use Quillstack\Response\Response;
 
-final class NotFoundResponse extends Response
+class NotFoundResponse extends Response
 {
+    //
 }
