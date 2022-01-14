@@ -6,6 +6,7 @@ namespace QuillStack\Framework;
 
 use RuntimeException;
 
-class QuillStackException extends RuntimeException
+class QuillstackException extends RuntimeException
 {
+    //
 }
