@@ -1,6 +1,6 @@
 {
     "name": "quillstack/framework",
-    "description": "The Quill Framework, a light and simple micro-framework to build the API.",
+    "description": "The Quillstack Framework, a light and simple micro-framework to build the API.",
     "type": "library",
     "license": "MIT",
     "keywords": [
@@ -11,39 +11,39 @@
         "psr-7",
         "psr-11",
         "psr-15",
-        "php7",
+        "php8",
         "api",
         "micro-service"
     ],
-    "homepage": "http://quillstack.com/framework",
+    "homepage": "https://quillstack.org/",
     "authors": [
         {
             "name": "Radek Ziemniewicz",
-            "email": "open-source@quillstack.com"
+            "email": "radek@quillstack.org"
         }
     ],
     "require": {
-        "php": "^7.4",
+        "php": "^8",
         "ext-json": "*",
         "psr/http-server-handler": "^1.0",
         "psr/http-server-middleware": "^1.0",
-        "quillstack/di": "^1.6.0",
-        "quillstack/response": "^1.0.2",
-        "quillstack/request": "^1.0.5",
-        "quillstack/router": "^1.0.3",
-        "quillstack/monolog-factory": "^1.0",
-        "quillstack/middleware": "^1.0",
-        "quillstack/dotenv": "^1.0",
-        "quillstack/config": "^1.0"
+        "quillstack/di": "^0.0.8",
+        "quillstack/response": "^0.0.2",
+        "quillstack/server-request": "^0.0.3",
+        "quillstack/router": "^0.0.2",
+        "quillstack/middleware": "^0.0.1",
+        "quillstack/dotenv": "^0.0.6",
+        "quillstack/config": "^0.0.1"
     },
     "autoload": {
         "psr-4": {
-            "QuillStack\\Framework\\": "src/QuillStack/Framework/",
-            "QuillStack\\Mocks\\": "tests/QuillStack/Mocks/"
+            "QuillStack\\Framework\\": "src/",
+            "QuillStack\\Framework\\Tests\\": "tests/"
         }
     },
-    "require-dev": {
-        "symfony/var-dumper": "^5.1",
-        "phpunit/phpunit": "^9"
+    "extra": {
+        "branch-alias": {
+            "dev-main": "0.x-dev"
+        }
     }
 }
