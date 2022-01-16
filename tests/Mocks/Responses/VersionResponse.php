@@ -2,22 +2,14 @@
 
 declare(strict_types=1);
 
-namespace QuillStack\Mocks\Responses;
+namespace Quillstack\Framework\Tests\Mocks\Responses;
 
-use QuillStack\Http\Response\Response;
+use Quillstack\Response\Response;
 
-final class VersionResponse extends Response
+class VersionResponse extends Response
 {
-    /**
-     * @var string
-     */
     private string $version = '';
 
-    /**
-     * @param string $version
-     *
-     * @return $this
-     */
     public function setVersion(string $version): self
     {
         $this->version = $version;

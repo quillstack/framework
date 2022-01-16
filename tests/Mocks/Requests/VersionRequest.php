@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace QuillStack\Mocks\Requests;
+namespace Quillstack\Framework\Tests\Mocks\Requests;
 
-use QuillStack\Framework\Interfaces\RequestInterface;
-use QuillStack\Http\Request\Request;
+use Quillstack\Framework\Interfaces\RequestInterface;
+use Quillstack\ServerRequest\ServerRequest;
 
-final class VersionRequest extends Request implements RequestInterface
+class VersionRequest extends ServerRequest implements RequestInterface
 {
+    //
 }

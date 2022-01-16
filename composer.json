@@ -6,6 +6,7 @@
     "keywords": [
         "framework",
         "php",
+        "php8",
         "micro-framework",
         "psr",
         "psr-7",
@@ -37,8 +38,8 @@
     },
     "autoload": {
         "psr-4": {
-            "QuillStack\\Framework\\": "src/",
-            "QuillStack\\Framework\\Tests\\": "tests/"
+            "Quillstack\\Framework\\": "src/",
+            "Quillstack\\Framework\\Tests\\": "tests/"
         }
     },
     "extra": {

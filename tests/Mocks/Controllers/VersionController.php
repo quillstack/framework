@@ -2,23 +2,16 @@
 
 declare(strict_types=1);
 
-namespace QuillStack\Mocks\Controllers;
+namespace Quillstack\Framework\Tests\Mocks\Controllers;
 
 use Psr\Http\Message\ServerRequestInterface;
-use QuillStack\Framework\Interfaces\ControllerInterface;
-use QuillStack\Mocks\Requests\VersionRequest;
-use QuillStack\Mocks\Responses\VersionResponse;
+use Quillstack\Framework\Interfaces\ControllerInterface;
+use Quillstack\Framework\Tests\Mocks\Requests\VersionRequest;
+use Quillstack\Framework\Tests\Mocks\Responses\VersionResponse;
 
-final class VersionController implements ControllerInterface
+class VersionController implements ControllerInterface
 {
-    /**
-     * @var VersionResponse
-     */
     public VersionResponse $response;
-
-    /**
-     * @var VersionRequest
-     */
     public VersionRequest $request;
 
     /**

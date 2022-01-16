@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace QuillStack\Mocks\Providers;
+namespace Quillstack\Framework\Tests\Mocks\Providers;
 
-use QuillStack\Framework\Interfaces\RouteProviderInterface;
-use QuillStack\Mocks\Controllers\ServiceVersionController;
-use QuillStack\Mocks\Controllers\VersionController;
-use QuillStack\Router\Router;
+use Quillstack\Framework\Interfaces\RouteProviderInterface;
+use Quillstack\Framework\Tests\Mocks\Controllers\ServiceVersionController;
+use Quillstack\Framework\Tests\Mocks\Controllers\VersionController;
+use Quillstack\Router\Router;
 
-final class RouteProvider implements RouteProviderInterface
+class RouteProvider implements RouteProviderInterface
 {
     /**
      * {@inheritDoc}
      */
-    public function getRoutes(Router &$router): void
+    public function setRoutes(Router &$router): void
     {
         $router->get('/version', VersionController::class);
         $router->get('/version/service', ServiceVersionController::class);

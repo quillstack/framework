@@ -7,8 +7,8 @@ namespace Quillstack\Framework;
 use Psr\Http\Message\ResponseInterface;
 use Quillstack\DI\Container;
 use Quillstack\Dotenv\Dotenv;
-use QuillStack\Framework\App\Config;
-use QuillStack\Framework\App\Kernel;
+use Quillstack\Framework\App\Config;
+use Quillstack\Framework\App\Kernel;
 
 class App
 {

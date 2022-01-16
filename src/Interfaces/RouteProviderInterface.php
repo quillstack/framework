@@ -8,5 +8,8 @@ use Quillstack\Router\Router;
 
 interface RouteProviderInterface
 {
-    public function getRoutes(Router &$router): void;
+    /**
+     * @param Router $router
+     */
+    public function setRoutes(Router &$router): void;
 }

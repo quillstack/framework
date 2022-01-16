@@ -52,7 +52,7 @@ class Kernel
     private function loadRoutes(): void
     {
         $routeProvider = $this->container->get(RouteProviderInterface::class);
-        $routeProvider->getRoutes($this->router);
+        $routeProvider->setRoutes($this->router);
     }
 
     private function loadHeaders(array $headers): void

@@ -12,7 +12,7 @@ class RequestClassFactory implements CustomFactoryInterface
 {
     private Container $container;
 
-    public function create(string $id): self
+    public function create(string $id): object
     {
         $factory = $this->container->get(GivenServerRequestFromGlobalsFactory::class);
 
