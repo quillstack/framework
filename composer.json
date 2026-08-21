@@ -30,16 +30,16 @@
         "psr/http-server-middleware": "^1.0",
         "psr/log": "^3.0",
         "psr/simple-cache": "^3.0",
-        "quillstack/cache": "^0.4",
-        "quillstack/config": "^0.4",
-        "quillstack/di": "^0.4",
-        "quillstack/dotenv": "^0.4",
-        "quillstack/events": "^0.4",
-        "quillstack/middleware": "^0.4",
-        "quillstack/output": "^0.4",
-        "quillstack/response": "^0.4",
-        "quillstack/router": "^0.4",
-        "quillstack/server-request": "^0.4"
+        "quillstack/cache": "^0.5",
+        "quillstack/config": "^0.5",
+        "quillstack/di": "^0.5",
+        "quillstack/dotenv": "^0.5",
+        "quillstack/events": "^0.5",
+        "quillstack/middleware": "^0.5",
+        "quillstack/output": "^0.5",
+        "quillstack/response": "^0.5",
+        "quillstack/router": "^0.5",
+        "quillstack/server-request": "^0.5"
     },
     "autoload": {
         "psr-4": {
@@ -49,12 +49,12 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.4.x-dev"
+            "dev-main": "0.5.x-dev"
         }
     },
     "require-dev": {
         "phpstan/phpstan": "^2.0",
-        "quillstack/unit-tests": "^0.7"
+        "quillstack/unit-tests": "^0.8"
     },
     "scripts": {
         "test": "unit-tests",
