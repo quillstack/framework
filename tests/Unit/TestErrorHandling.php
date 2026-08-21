@@ -108,6 +108,32 @@ class TestErrorHandling
         $this->assertBoolean->isFalse(isset($inProduction['error']['trace']));
     }
 
+    /**
+     * An application which never said which environment it is in counts as production:
+     * saying nothing must not be what turns the internals on. Reading APP_ENV when it was
+     * not set used to end in a TypeError inside the middleware meant to catch errors.
+     */
+    public function sayingNothingCountsAsProduction()
+    {
+        $_SERVER = [
+            'REQUEST_METHOD' => 'GET',
+            'HTTP_HOST' => 'localhost',
+            'REQUEST_URI' => '/broken',
+            'SERVER_PROTOCOL' => '1.1',
+        ];
+        unset($_ENV['APP_ENV']);
+
+        $response = (new App('', [
+            RouteProviderInterface::class => RouteProvider::class,
+        ]))->run();
+
+        $this->assertEqual->equal(500, $response->getStatusCode());
+        $this->assertEqual->equal(
+            ['error' => ['status' => 500, 'message' => 'Internal Server Error']],
+            $response->send()
+        );
+    }
+
     public function theErrorIsStillJson()
     {
         $this->assertEqual->equal(

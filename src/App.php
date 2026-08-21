@@ -15,6 +15,10 @@ class App
 {
     public Container $container;
 
+    /**
+     * @param array<string, mixed> $config
+     * @param array<int, class-string> $middleware
+     */
     public function __construct(string $envPath = '', array $config = [], private array $middleware = [])
     {
         $configWithEnv = $this->getConfigWithEnvPath($envPath, $config);
@@ -24,6 +28,11 @@ class App
         );
     }
 
+    /**
+     * @param array<string, mixed> $config
+     *
+     * @return array<string, mixed>
+     */
     private function getConfigWithEnvPath(string $envPath, array $config = []): array
     {
         if (empty($envPath)) {
@@ -37,6 +46,9 @@ class App
         ], $config);
     }
 
+    /**
+     * @param array<string, mixed> $configWithEnv
+     */
     private function loadEnvIfRequired(string $envPath, array $configWithEnv = []): void
     {
         if ($envPath !== '' && !is_file($envPath)) {
@@ -50,11 +62,14 @@ class App
             (new Config())->get($configWithEnv)
         );
 
-        $container->get(Dotenv::class)->load();
+        /** @var Dotenv $dotenv */
+        $dotenv = $container->get(Dotenv::class);
+        $dotenv->load();
     }
 
     public function run(): ResponseInterface
     {
+        /** @var Kernel $kernel */
         $kernel = $this->container->get(Kernel::class);
 
         return $kernel->boot($this->middleware);

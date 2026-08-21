@@ -20,7 +20,7 @@ use Quillstack\Uri\Factory\UriFactory;
 class Config
 {
     /**
-     * @var array
+     * @var array<int, class-string>
      */
     public const DEFAULT_MIDDLEWARE = [
         RoutingMiddleware::class,
@@ -29,6 +29,9 @@ class Config
         AuthorizationMiddleware::class,
     ];
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $defaultConfig = [
         StreamInterface::class => InputStream::class,
         UriFactoryInterface::class => UriFactory::class,
@@ -38,6 +41,10 @@ class Config
 
     /**
      * The definitions of the application, on top of the ones the framework needs itself.
+     *
+     * @param array<string, mixed> $config
+     *
+     * @return array<string, mixed>
      */
     public function get(array $config): array
     {

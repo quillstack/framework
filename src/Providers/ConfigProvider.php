@@ -9,6 +9,9 @@ use Quillstack\Framework\Config\LoggerConfig;
 
 class ConfigProvider implements ConfigProviderInterface
 {
+    /**
+     * @var array<string, class-string<\Quillstack\Config\ConfigInterface>>
+     */
     protected array $config = [
         'logger' => LoggerConfig::class,
     ];

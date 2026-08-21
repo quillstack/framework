@@ -16,6 +16,9 @@ use Throwable;
 class ErrorResponse extends Response
 {
     private string $error = '';
+    /**
+     * @var array<string, mixed>
+     */
     private array $details = [];
 
     public function __construct(int $code = StatusCode::INTERNAL_SERVER_ERROR, ?HeaderBag $headerBag = null)

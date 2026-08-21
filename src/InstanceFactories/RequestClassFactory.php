@@ -14,6 +14,7 @@ class RequestClassFactory implements CustomFactoryInterface
 
     public function create(string $id): object
     {
+        /** @var GivenServerRequestFromGlobalsFactory $factory */
         $factory = $this->container->get(GivenServerRequestFromGlobalsFactory::class);
 
         return $factory->createGivenServerRequest($id);

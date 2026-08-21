@@ -85,7 +85,10 @@ class ErrorMiddleware implements MiddlewareInterface
             return;
         }
 
-        $this->container->get(LoggerInterface::class)->error($throwable->getMessage(), [
+        /** @var LoggerInterface $logger */
+        $logger = $this->container->get(LoggerInterface::class);
+
+        $logger->error($throwable->getMessage(), [
             'exception' => $throwable::class,
             'file' => $throwable->getFile(),
             'line' => $throwable->getLine(),

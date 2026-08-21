@@ -4,17 +4,21 @@ declare(strict_types=1);
 
 namespace Quillstack\Framework\Services;
 
-use Quillstack\Framework\Exceptions\ArgumentTypeNotAllowedException;
-
 class AppEnvService
 {
     public const ENV_PRODUCTION = 'production';
     public const ENV_DEVELOP = 'develop';
     public const ENV_TESTING = 'testing';
 
+    /**
+     * Which environment the application is running in. An application which never said
+     * counts as production: not saying so must not be what turns the internals on.
+     */
     public function env(): string
     {
-        return env('APP_ENV');
+        $env = env('APP_ENV', self::ENV_PRODUCTION);
+
+        return is_string($env) ? $env : self::ENV_PRODUCTION;
     }
 
     public function isProduction(): bool
@@ -32,16 +36,15 @@ class AppEnvService
         return $this->isEnv(self::ENV_TESTING);
     }
 
-    public function isEnv($env): bool
+    /**
+     * @param string|string[] $env
+     */
+    public function isEnv(string|array $env): bool
     {
         if (is_string($env)) {
             return $this->env() === $env;
         }
 
-        if (is_array($env)) {
-            return in_array($this->env(), $env, true);
-        }
-
-        throw new ArgumentTypeNotAllowedException('Parameter must be string or array');
+        return in_array($this->env(), $env, true);
     }
 }

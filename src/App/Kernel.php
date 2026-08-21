@@ -10,7 +10,6 @@ use Quillstack\Framework\Http\Controllers\NotFoundController;
 use Quillstack\Framework\Http\Middleware\ErrorMiddleware;
 use Quillstack\Framework\Interfaces\RouteProviderInterface;
 use Quillstack\Middleware\MiddlewareBuilder;
-use Quillstack\Router\Dispatcher;
 use Quillstack\Router\Router;
 use Quillstack\ServerRequest\Factory\ServerRequest\ServerRequestFromGlobalsFactory;
 
@@ -18,13 +17,15 @@ class Kernel
 {
     public function __construct(
         private readonly ContainerInterface $container,
-        private readonly Dispatcher $dispatcher,
         private readonly ServerRequestFromGlobalsFactory $requestFromGlobalsFactory,
         private readonly Router $router
     ) {
         //
     }
 
+    /**
+     * @param array<int, class-string> $middleware
+     */
     public function boot(array $middleware): ResponseInterface
     {
         // Load all routes.
@@ -34,9 +35,9 @@ class Kernel
         $middlewareBuilder = $this->loadMiddleware($middleware);
 
         // Get handler.
-        $handler = $middlewareBuilder->build(
-            $this->container->get(NotFoundController::class)
-        );
+        /** @var NotFoundController $notFound */
+        $notFound = $this->container->get(NotFoundController::class);
+        $handler = $middlewareBuilder->build($notFound);
 
         // Handle request.
         $response = $handler->handle(
@@ -54,6 +55,7 @@ class Kernel
 
     private function loadRoutes(): void
     {
+        /** @var RouteProviderInterface $routeProvider */
         $routeProvider = $this->container->get(RouteProviderInterface::class);
         $routeProvider->setRoutes($this->router);
     }
@@ -61,6 +63,9 @@ class Kernel
     /**
      * A header holds a list of values, and each of them is sent on a line of its own. The
      * first one replaces whatever was set before, the rest are added next to it.
+     */
+    /**
+     * @param array<string, string[]> $headers
      */
     private function loadHeaders(array $headers): void
     {
@@ -76,6 +81,9 @@ class Kernel
         }
     }
 
+    /**
+     * @param array<int, class-string> $middleware
+     */
     private function loadMiddleware(array $middleware): MiddlewareBuilder
     {
         $classes = array_reverse(array_merge(Config::DEFAULT_MIDDLEWARE, $middleware));
