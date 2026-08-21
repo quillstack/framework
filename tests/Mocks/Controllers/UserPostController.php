@@ -13,7 +13,10 @@ use Quillstack\Framework\Tests\Mocks\Responses\UserResponse;
  */
 class UserPostController implements ControllerInterface
 {
-    public UserResponse $response;
+    public function __construct(private readonly UserResponse $response)
+    {
+        //
+    }
 
     /**
      * {@inheritDoc}

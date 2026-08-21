@@ -6,15 +6,17 @@ namespace Quillstack\Framework\Tests\Mocks\Controllers;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Quillstack\Framework\Interfaces\ControllerInterface;
-use Quillstack\Framework\Tests\Mocks\Requests\VersionRequest;
 use Quillstack\Framework\Tests\Mocks\Responses\VersionResponse;
 use Quillstack\Framework\Tests\Mocks\Services\VersionService;
 
 class ServiceVersionController implements ControllerInterface
 {
-    public VersionResponse $response;
-    public VersionRequest $request;
-    public VersionService $versionService;
+    public function __construct(
+        private readonly VersionResponse $response,
+        private readonly VersionService $versionService
+    ) {
+        //
+    }
 
     /**
      * {@inheritDoc}

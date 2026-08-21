@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Quillstack\Framework\App;
 
 use Psr\Http\Message\ResponseInterface;
-use Quillstack\DI\Container;
+use Psr\Container\ContainerInterface;
 use Quillstack\Framework\Http\Controllers\NotFoundController;
 use Quillstack\Framework\Interfaces\RouteProviderInterface;
 use Quillstack\Middleware\MiddlewareBuilder;
@@ -15,15 +15,17 @@ use Quillstack\ServerRequest\Factory\ServerRequest\ServerRequestFromGlobalsFacto
 
 class Kernel
 {
-    private ?Container $container;
-    public Dispatcher $dispatcher;
-    public ServerRequestFromGlobalsFactory $requestFromGlobalsFactory;
-    public Router $router;
+    public function __construct(
+        private readonly ContainerInterface $container,
+        private readonly Dispatcher $dispatcher,
+        private readonly ServerRequestFromGlobalsFactory $requestFromGlobalsFactory,
+        private readonly Router $router
+    ) {
+        //
+    }
 
-    public function boot(Container $container, array $middleware): ResponseInterface
+    public function boot(array $middleware): ResponseInterface
     {
-        $this->container = $container;
-
         // Load all routes.
         $this->loadRoutes();
 
@@ -75,12 +77,9 @@ class Kernel
 
     private function loadMiddleware(array $middleware): MiddlewareBuilder
     {
-        $middlewareBuilder = new MiddlewareBuilder(
-            array_reverse(array_merge(Config::DEFAULT_MIDDLEWARE, $middleware))
+        return new MiddlewareBuilder(
+            array_reverse(array_merge(Config::DEFAULT_MIDDLEWARE, $middleware)),
+            $this->container
         );
-
-        $middlewareBuilder->container = $this->container;
-
-        return $middlewareBuilder;
     }
 }

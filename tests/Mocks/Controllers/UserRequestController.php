@@ -10,7 +10,10 @@ use Quillstack\Framework\Tests\Mocks\Requests\UserRequest;
 use Quillstack\Framework\Tests\Mocks\Responses\UserResponse;
 
 /**
- * Declares its own request class, and still reads the route parameters off it.
+ * Kept on property injection on purpose: dependencies go through the constructor now, and
+ * this proves filling public properties still works for anyone who wants it. The request
+ * has to be a property, since the routing middleware replaces it with the one carrying the
+ * route parameters.
  */
 class UserRequestController implements ControllerInterface
 {

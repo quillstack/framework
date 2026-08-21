@@ -20,7 +20,7 @@ class App
         $configWithEnv = $this->getConfigWithEnvPath($envPath, $config);
         $this->loadEnvIfRequired($envPath, $configWithEnv);
         $this->container = new Container(
-            (new Config())->loadEnv()->get($configWithEnv)
+            (new Config())->get($configWithEnv)
         );
     }
 
@@ -57,6 +57,6 @@ class App
     {
         $kernel = $this->container->get(Kernel::class);
 
-        return $kernel->boot($this->container, $this->middleware);
+        return $kernel->boot($this->middleware);
     }
 }

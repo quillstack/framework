@@ -87,17 +87,40 @@ final class UserController implements ControllerInterface
 
 ### Controllers
 
-Dependencies are injected into public typed properties, so a controller only declares what
-it needs:
+Dependencies are asked for through the constructor, so what a controller needs is written
+in one place and cannot be swapped out from the outside:
 
 ```php
 final class HomeController implements ControllerInterface
 {
-    public HomeResponse $response;
-    public VersionService $versionService;
-    public LoggerInterface $logger;
+    public function __construct(
+        private readonly HomeResponse $response,
+        private readonly VersionService $versionService,
+        private readonly LoggerInterface $logger
+    ) {
+    }
+
+    public function handle(ServerRequestInterface $request): HomeResponse
+    {
+        return $this->response->setVersion(
+            $this->versionService->getVersion()
+        );
+    }
 }
 ```
+
+The container also fills public typed properties, which is how a controller can be handed
+a request class of its own, since the routing middleware replaces it with the one carrying
+the route parameters:
+
+```php
+final class UserController implements ControllerInterface
+{
+    public UserRequest $request;
+}
+```
+
+Anything else belongs in the constructor.
 
 ### Unit tests
 

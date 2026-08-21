@@ -36,23 +36,11 @@ class Config
         ConfigProviderInterface::class => ConfigProvider::class,
     ];
 
-    public string $root;
-    private array $envConfig = [];
-
-    public function __construct()
-    {
-        $this->root = dirname(__FILE__) . '/../../../../../../../';
-    }
-
-    public function loadEnv(): self
-    {
-        $this->envConfig = [];
-
-        return $this;
-    }
-
+    /**
+     * The definitions of the application, on top of the ones the framework needs itself.
+     */
     public function get(array $config): array
     {
-        return array_merge($this->defaultConfig, $this->envConfig, $config);
+        return array_merge($this->defaultConfig, $config);
     }
 }

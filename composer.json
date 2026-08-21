@@ -24,7 +24,7 @@
         }
     ],
     "require": {
-        "php": "^8",
+        "php": "^8.1",
         "ext-json": "*",
         "psr/http-server-handler": "^1.0",
         "psr/http-server-middleware": "^1.0",
