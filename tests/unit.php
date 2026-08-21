@@ -8,6 +8,8 @@ return [
     \Quillstack\Framework\Tests\Unit\TestErrorLogging::class,
     \Quillstack\Framework\Tests\Unit\TestValidation::class,
     \Quillstack\Framework\Tests\Unit\TestValidationOverHttp::class,
+    \Quillstack\Framework\Tests\Unit\TestConsoleInput::class,
+    \Quillstack\Framework\Tests\Unit\TestConsole::class,
     \Quillstack\Framework\Tests\Unit\TestSimpleMiddleware::class,
     \Quillstack\Framework\Tests\Unit\TestSimpleService::class,
     \Quillstack\Framework\Tests\Unit\TestSimpleRequest::class,

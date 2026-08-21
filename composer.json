@@ -24,18 +24,19 @@
         }
     ],
     "require": {
-        "php": "^8.1",
         "ext-json": "*",
+        "php": "^8.1",
         "psr/http-server-handler": "^1.0",
         "psr/http-server-middleware": "^1.0",
-        "quillstack/di": "^0.2",
-        "quillstack/response": "^0.2",
-        "quillstack/server-request": "^0.2",
-        "quillstack/router": "^0.2",
-        "quillstack/middleware": "^0.2",
-        "quillstack/dotenv": "^0.2",
+        "psr/log": "^3.0",
         "quillstack/config": "^0.2",
-        "psr/log": "^3.0"
+        "quillstack/di": "^0.2",
+        "quillstack/dotenv": "^0.2",
+        "quillstack/middleware": "^0.2",
+        "quillstack/output": "^0.2",
+        "quillstack/response": "^0.2",
+        "quillstack/router": "^0.2",
+        "quillstack/server-request": "^0.2"
     },
     "autoload": {
         "psr-4": {

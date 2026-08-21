@@ -85,6 +85,65 @@ final class UserController implements ControllerInterface
 }
 ```
 
+### Commands
+
+`Console` is what `App` is for a request: the same container, the same configuration, and
+the same way of registering what the application brings.
+
+```php
+#!/usr/bin/env php
+<?php
+
+use App\Providers\CommandProvider;
+use Quillstack\Framework\Console;
+use Quillstack\Framework\Console\CommandProviderInterface;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$console = new Console(__DIR__ . '/../.env', [
+    CommandProviderInterface::class => CommandProvider::class,
+]);
+
+exit($console->run($argv));
+```
+
+A command asks for what it needs through the constructor, the way a controller does, and
+returns the exit code:
+
+```php
+final class VersionCommand implements CommandInterface
+{
+    public function __construct(private readonly VersionService $versionService)
+    {
+    }
+
+    public function getName(): string
+    {
+        return 'app:version';
+    }
+
+    public function getDescription(): string
+    {
+        return 'Shows which version of the application this is';
+    }
+
+    public function run(Input $input, OutputInterface $output): int
+    {
+        $output->writeln("Version <green>{$this->versionService->getVersion()}</green>");
+
+        return 0;
+    }
+}
+```
+
+`Input` reads what was typed: `$input->getArgument(0)` for a value standing on its own, and
+`$input->getOption('force')` for `--force`, `--target=prod` or `-f`. Typing nothing lists the
+commands there are, and a name nobody knows says so and exits with 1.
+
+Colours are written only when the output is a terminal, so a command piped into a file
+writes the text alone. A command which throws is reported the way a request is: the message,
+and outside production the exception with it.
+
 ### Validation
 
 Ask the validator what the request may hold. What comes back is only the fields there were
