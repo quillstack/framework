@@ -44,7 +44,8 @@ class Kernel
             $this->requestFromGlobalsFactory->createServerRequest()
         );
 
-        // Set headers for the response.
+        // Say what happened, and then how.
+        $this->sendStatus($response);
         $this->loadHeaders(
             $response->getHeaders()
         );
@@ -58,6 +59,19 @@ class Kernel
         /** @var RouteProviderInterface $routeProvider */
         $routeProvider = $this->container->get(RouteProviderInterface::class);
         $routeProvider->setRoutes($this->router);
+    }
+
+    /**
+     * The status line, which used to be left alone: a response saying 404 went out as 200,
+     * and anything reading the status rather than the body was told the request had worked.
+     */
+    private function sendStatus(ResponseInterface $response): void
+    {
+        if (PHP_SAPI === 'cli') {
+            return;
+        }
+
+        http_response_code($response->getStatusCode());
     }
 
     /**
