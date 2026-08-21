@@ -10,7 +10,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Clock\ClockInterface;
 use Psr\SimpleCache\CacheInterface;
-use Quillstack\Cache\Clock\SystemClock;
+use Quillstack\Clock\SystemClock;
 use Quillstack\Framework\Exceptions\Http\TooManyRequestsHttpException;
 
 /**

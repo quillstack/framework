@@ -6,7 +6,7 @@ namespace Quillstack\Framework\Tests\Unit;
 
 use Psr\SimpleCache\CacheInterface;
 use Quillstack\Cache\ArrayCache;
-use Quillstack\Cache\Clock\FrozenClock;
+use Quillstack\Clock\FrozenClock;
 use Quillstack\Framework\App;
 use Quillstack\Framework\Http\Middleware\RateLimitMiddleware;
 use Quillstack\Framework\Interfaces\RouteProviderInterface;

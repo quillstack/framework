@@ -10,6 +10,7 @@ return [
     \Quillstack\Framework\Tests\Unit\TestValidationOverHttp::class,
     \Quillstack\Framework\Tests\Unit\TestConsoleInput::class,
     \Quillstack\Framework\Tests\Unit\TestConsole::class,
+    \Quillstack\Framework\Tests\Unit\TestQueueCommand::class,
     \Quillstack\Framework\Tests\Unit\TestServiceProviders::class,
     \Quillstack\Framework\Tests\Unit\TestCors::class,
     \Quillstack\Framework\Tests\Unit\TestRateLimit::class,

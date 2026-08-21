@@ -6,9 +6,11 @@ namespace Quillstack\Framework\Console;
 
 use Psr\Container\ContainerInterface;
 use Quillstack\Framework\Console\Commands\ListCommand;
+use Quillstack\Framework\Console\Commands\QueueWorkCommand;
 use Quillstack\Framework\Console\Exceptions\CommandNotFoundException;
 use Quillstack\Framework\Services\AppEnvService;
 use Quillstack\Output\OutputInterface;
+use Quillstack\Queue\Queue;
 use Throwable;
 
 /**
@@ -50,6 +52,14 @@ class ConsoleKernel
     {
         /** @var CommandInterface[] $commands */
         $commands = [$this->container->get(ListCommand::class)];
+
+        // Working a queue only makes sense where there is one, so the command shows up once
+        // the application has configured it and not before.
+        if ($this->container->has(Queue::class)) {
+            /** @var CommandInterface $queueWork */
+            $queueWork = $this->container->get(QueueWorkCommand::class);
+            $commands[] = $queueWork;
+        }
 
         if ($this->container->has(CommandProviderInterface::class)) {
             /** @var CommandProviderInterface $provider */

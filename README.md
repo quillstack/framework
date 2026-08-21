@@ -152,6 +152,27 @@ RateLimitMiddleware::class => new RateLimitMiddleware($cache, limit: 60, window:
 Past the limit the request is answered with 429, and `X-RateLimit-Limit` and
 `X-RateLimit-Remaining` say where the caller stands.
 
+### Queues
+
+Work which does not have to happen while somebody is waiting goes on a queue. A message
+carries what it is about, and a handler does something with it:
+
+```php
+$queue->push(new SendWelcomeEmail($user->email));
+```
+
+The command shows up once the application has configured a queue:
+
+```shell
+./bin/quill queue:work                    # everything due now, then stop
+./bin/quill queue:work emails             # a queue of its own
+./bin/quill queue:work --keep-running     # wait for more
+```
+
+A message which fails is tried again a few times and then set aside, and written to the log
+when a PSR-3 logger is configured. See [quillstack/queue](https://github.com/quillstack/queue)
+for the rest.
+
 ### Commands
 
 `Console` is what `App` is for a request: the same container, the same configuration, and
