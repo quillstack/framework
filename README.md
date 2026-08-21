@@ -85,6 +85,47 @@ final class UserController implements ControllerInterface
 }
 ```
 
+### Errors
+
+Nothing thrown by the application reaches the client as a fatal error. Throw an HTTP
+exception and it is answered with the status it carries:
+
+```php
+use Quillstack\Framework\Exceptions\Http\NotFoundHttpException;
+
+public function handle(ServerRequestInterface $request): UserResponse
+{
+    $user = $this->users->find($request->getAttribute('id'));
+
+    if ($user === null) {
+        throw new NotFoundHttpException('No user with that id');
+    }
+
+    return $this->response->setUser($user);
+}
+```
+
+```json
+{"error": {"status": 404, "message": "No user with that id"}}
+```
+
+`BadRequestHttpException`, `UnauthorizedHttpException`, `ForbiddenHttpException`,
+`NotFoundHttpException`, `MethodNotAllowedHttpException`, `ConflictHttpException`,
+`UnprocessableContentHttpException`, `TooManyRequestsHttpException` and
+`ServiceUnavailableHttpException` are there, and `HttpException` takes any status.
+
+Anything else is an error of the application: it is answered with 500 and written to the
+log, when the application configured a PSR-3 logger under `LoggerInterface`. In production
+the client is told the status and nothing else. Anywhere else, `APP_ENV` being something
+other than `production`, the answer describes the exception:
+
+```json
+{"error": {"status": 500, "message": "Internal Server Error",
+           "exception": "RuntimeException", "file": "...", "line": 16, "trace": ["..."]}}
+```
+
+A request matching no route is answered with 404.
+
 ### Controllers
 
 Dependencies are asked for through the constructor, so what a controller needs is written

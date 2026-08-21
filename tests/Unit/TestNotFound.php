@@ -16,21 +16,28 @@ class TestNotFound
         //
     }
 
+    /**
+     * A request matching no route used to answer 200 with an empty body, telling every
+     * client that finding nothing had gone well.
+     */
     public function notFoundRequest()
     {
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['HTTP_HOST'] = 'localhost';
-        $_SERVER['REQUEST_URI'] = '/not-found';
-        $_SERVER['SERVER_PROTOCOL'] = '1.1';
+        $_SERVER = [
+            'REQUEST_METHOD' => 'GET',
+            'HTTP_HOST' => 'localhost',
+            'REQUEST_URI' => '/not-found',
+            'SERVER_PROTOCOL' => '1.1',
+        ];
 
-        // Create App instance with config.
-        $app = new App('', [
+        $response = (new App('', [
             RouteProviderInterface::class => RouteProvider::class,
-        ]);
+        ]))->run();
 
-        // Run app.
-        $response = $app->run();
-
-        $this->assertEqual->equal('[]', json_encode($response));
+        $this->assertEqual->equal(404, $response->getStatusCode());
+        $this->assertEqual->equal('Not Found', $response->getReasonPhrase());
+        $this->assertEqual->equal(
+            '{"error":{"status":404,"message":"Not Found"}}',
+            json_encode($response)
+        );
     }
 }

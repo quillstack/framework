@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Quillstack\Framework\Tests\Mocks\Providers;
 
 use Quillstack\Framework\Interfaces\RouteProviderInterface;
+use Quillstack\Framework\Tests\Mocks\Controllers\BrokenController;
+use Quillstack\Framework\Tests\Mocks\Controllers\InvalidInputController;
+use Quillstack\Framework\Tests\Mocks\Controllers\MissingThingController;
 use Quillstack\Framework\Tests\Mocks\Controllers\ServiceVersionController;
 use Quillstack\Framework\Tests\Mocks\Controllers\UserPostController;
 use Quillstack\Framework\Tests\Mocks\Controllers\UserRequestController;
@@ -19,6 +22,9 @@ class RouteProvider implements RouteProviderInterface
     public function setRoutes(Router $router): void
     {
         $router->get('/version', VersionController::class);
+        $router->get('/broken', BrokenController::class);
+        $router->get('/missing', MissingThingController::class);
+        $router->get('/invalid', InvalidInputController::class);
         $router->get('/version/service', ServiceVersionController::class);
         $router->get('/users/:user/posts/:post', UserPostController::class)->name('user.post');
         $router->delete('/users/{user}/posts/{post}', UserRequestController::class)->name('user.post.delete');

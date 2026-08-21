@@ -34,7 +34,8 @@
         "quillstack/router": "^0.2",
         "quillstack/middleware": "^0.2",
         "quillstack/dotenv": "^0.2",
-        "quillstack/config": "^0.2"
+        "quillstack/config": "^0.2",
+        "psr/log": "^3.0"
     },
     "autoload": {
         "psr-4": {

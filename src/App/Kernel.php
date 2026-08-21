@@ -7,6 +7,7 @@ namespace Quillstack\Framework\App;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Container\ContainerInterface;
 use Quillstack\Framework\Http\Controllers\NotFoundController;
+use Quillstack\Framework\Http\Middleware\ErrorMiddleware;
 use Quillstack\Framework\Interfaces\RouteProviderInterface;
 use Quillstack\Middleware\MiddlewareBuilder;
 use Quillstack\Router\Dispatcher;
@@ -77,9 +78,12 @@ class Kernel
 
     private function loadMiddleware(array $middleware): MiddlewareBuilder
     {
-        return new MiddlewareBuilder(
-            array_reverse(array_merge(Config::DEFAULT_MIDDLEWARE, $middleware)),
-            $this->container
-        );
+        $classes = array_reverse(array_merge(Config::DEFAULT_MIDDLEWARE, $middleware));
+
+        // Whatever the application adds, nothing runs outside the error middleware, or an
+        // exception thrown there would reach the client as a fatal error.
+        array_unshift($classes, ErrorMiddleware::class);
+
+        return new MiddlewareBuilder($classes, $this->container);
     }
 }
