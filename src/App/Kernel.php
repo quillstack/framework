@@ -55,15 +55,21 @@ class Kernel
         $routeProvider->setRoutes($this->router);
     }
 
+    /**
+     * A header holds a list of values, and each of them is sent on a line of its own. The
+     * first one replaces whatever was set before, the rest are added next to it.
+     */
     private function loadHeaders(array $headers): void
     {
-        // We don't want to send HTTP headers in console.
-        if (defined('STDIN')) {
+        // There are no HTTP headers to send in the console.
+        if (PHP_SAPI === 'cli') {
             return;
         }
 
-        foreach ($headers as $name => $header) {
-            header("{$name}: {$header}");
+        foreach ($headers as $name => $values) {
+            foreach (array_values((array) $values) as $index => $value) {
+                header("{$name}: {$value}", $index === 0);
+            }
         }
     }
 
