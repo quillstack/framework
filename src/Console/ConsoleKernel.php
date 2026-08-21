@@ -48,11 +48,17 @@ class ConsoleKernel
      */
     public function getCommands(): array
     {
+        /** @var CommandInterface[] $commands */
         $commands = [$this->container->get(ListCommand::class)];
 
         if ($this->container->has(CommandProviderInterface::class)) {
-            foreach ($this->container->get(CommandProviderInterface::class)->getCommands() as $class) {
-                $commands[] = $this->container->get($class);
+            /** @var CommandProviderInterface $provider */
+            $provider = $this->container->get(CommandProviderInterface::class);
+
+            foreach ($provider->getCommands() as $class) {
+                /** @var CommandInterface $command */
+                $command = $this->container->get($class);
+                $commands[] = $command;
             }
         }
 

@@ -44,7 +44,7 @@ class ListCommand implements CommandInterface
         /** @var ConsoleKernel $kernel */
         $kernel = $this->container->get(ConsoleKernel::class);
         $commands = $kernel->getCommands();
-        $width = max(array_map('strlen', array_keys($commands)));
+        $width = max(1, ...array_map('strlen', array_keys($commands)));
 
         $output->writeln('<green>Commands</green>');
 

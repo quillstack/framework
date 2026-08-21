@@ -36,8 +36,8 @@ class Input
 
         foreach ($argv as $part) {
             if (str_starts_with($part, '--')) {
-                [$name, $value] = array_pad(explode('=', substr($part, 2), 2), 2, null);
-                $options[$name] = $value ?? true;
+                $pieces = explode('=', substr($part, 2), 2);
+                $options[$pieces[0]] = $pieces[1] ?? true;
             } elseif (str_starts_with($part, '-') && strlen($part) > 1) {
                 foreach (str_split(substr($part, 1)) as $flag) {
                     $options[$flag] = true;
