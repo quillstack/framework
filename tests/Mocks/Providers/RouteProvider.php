@@ -9,6 +9,7 @@ use Quillstack\Framework\Tests\Mocks\Controllers\BrokenController;
 use Quillstack\Framework\Tests\Mocks\Controllers\InvalidInputController;
 use Quillstack\Framework\Tests\Mocks\Controllers\MissingThingController;
 use Quillstack\Framework\Tests\Mocks\Controllers\ServiceVersionController;
+use Quillstack\Framework\Tests\Mocks\Controllers\SignUpController;
 use Quillstack\Framework\Tests\Mocks\Controllers\UserPostController;
 use Quillstack\Framework\Tests\Mocks\Controllers\UserRequestController;
 use Quillstack\Framework\Tests\Mocks\Controllers\VersionController;
@@ -25,6 +26,7 @@ class RouteProvider implements RouteProviderInterface
         $router->get('/broken', BrokenController::class);
         $router->get('/missing', MissingThingController::class);
         $router->get('/invalid', InvalidInputController::class);
+        $router->post('/sign-up', SignUpController::class);
         $router->get('/version/service', ServiceVersionController::class);
         $router->get('/users/:user/posts/:post', UserPostController::class)->name('user.post');
         $router->delete('/users/{user}/posts/{post}', UserRequestController::class)->name('user.post.delete');

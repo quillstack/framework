@@ -31,6 +31,18 @@ class ErrorResponse extends Response
     }
 
     /**
+     * Adds what the client needs to act on the error, such as which fields were wrong.
+     *
+     * @param array<string, mixed> $details
+     */
+    public function addDetails(array $details): self
+    {
+        $this->details += $details;
+
+        return $this;
+    }
+
+    /**
      * Describes the exception, which only happens when the application is not in production.
      */
     public function describe(Throwable $throwable): self

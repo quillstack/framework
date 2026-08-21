@@ -85,6 +85,55 @@ final class UserController implements ControllerInterface
 }
 ```
 
+### Validation
+
+Ask the validator what the request may hold. What comes back is only the fields there were
+rules for, so nothing else that happened to be sent reaches the application:
+
+```php
+use Quillstack\Framework\Validation\Validator;
+
+public function __construct(
+    private readonly UserResponse $response,
+    private readonly Validator $validator
+) {
+}
+
+public function handle(ServerRequestInterface $request): UserResponse
+{
+    $data = $this->validator->check((array) $request->getParsedBody(), [
+        'email' => ['required', 'email'],
+        'age' => ['required', 'integer', 'min:18'],
+        'plan' => ['required', 'in:free,pro'],
+    ]);
+
+    return $this->response->setEmail($data['email']);
+}
+```
+
+Everything wrong is reported at once, and the answer says which field and why:
+
+```json
+{"error": {"status": 422, "message": "The given data was invalid",
+           "fields": {"email": ["The email field has to be an email address"],
+                      "age": ["The age field has to be at least 18"]}}}
+```
+
+`required`, `string`, `integer`, `numeric`, `boolean`, `email` and `url` are written by
+name. `min:18`, `max:255`, `in:free,pro` and `same:password` take what follows the colon.
+`min` and `max` read a number by its value, a string by its length and a list by how many it
+holds, so a field sent over HTTP as `"30"` is thirty and not two characters.
+
+A rule of your own is any class implementing `RuleInterface`, and goes into the list next to
+the written ones:
+
+```php
+'slug' => ['required', new UniqueSlug($this->articles)],
+```
+
+A field which was not sent at all is only `required`'s business: every other rule lets it
+through, so `['email']` alone accepts a missing field and rejects a malformed one.
+
 ### Errors
 
 Nothing thrown by the application reaches the client as a fatal error. Throw an HTTP

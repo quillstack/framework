@@ -13,6 +13,7 @@ use Psr\Log\LoggerInterface;
 use Quillstack\Framework\Exceptions\Http\HttpException;
 use Quillstack\Framework\Http\Responses\ErrorResponse;
 use Quillstack\Framework\Services\AppEnvService;
+use Quillstack\Framework\Validation\Exceptions\ValidationFailedException;
 use Quillstack\Response\StatusCode;
 use Throwable;
 
@@ -37,6 +38,13 @@ class ErrorMiddleware implements MiddlewareInterface
     {
         try {
             return $handler->handle($request);
+        } catch (ValidationFailedException $exception) {
+            return $this->respond(
+                $exception->getStatusCode(),
+                $exception->getMessage(),
+                $exception,
+                ['fields' => $exception->getErrors()]
+            );
         } catch (HttpException $exception) {
             return $this->respond($exception->getStatusCode(), $exception->getMessage(), $exception);
         } catch (Throwable $throwable) {
@@ -44,13 +52,20 @@ class ErrorMiddleware implements MiddlewareInterface
         }
     }
 
-    private function respond(int $status, string $message, Throwable $throwable): ResponseInterface
-    {
+    /**
+     * @param array<string, mixed> $details anything the client needs beyond the message
+     */
+    private function respond(
+        int $status,
+        string $message,
+        Throwable $throwable,
+        array $details = []
+    ): ResponseInterface {
         if ($status >= StatusCode::INTERNAL_SERVER_ERROR) {
             $this->log($throwable);
         }
 
-        $response = (new ErrorResponse($status))->setError($message);
+        $response = (new ErrorResponse($status))->setError($message)->addDetails($details);
 
         // What went wrong is only described where somebody is working on it. In production
         // the client is told the status and nothing about the internals.
