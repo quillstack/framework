@@ -28,13 +28,13 @@
         "ext-json": "*",
         "psr/http-server-handler": "^1.0",
         "psr/http-server-middleware": "^1.0",
-        "quillstack/di": "^0.1",
-        "quillstack/response": "^0.1",
-        "quillstack/server-request": "^0.1",
-        "quillstack/router": "^0.1",
-        "quillstack/middleware": "^0.1",
-        "quillstack/dotenv": "^0.1",
-        "quillstack/config": "^0.1"
+        "quillstack/di": "^0.2",
+        "quillstack/response": "^0.2",
+        "quillstack/server-request": "^0.2",
+        "quillstack/router": "^0.2",
+        "quillstack/middleware": "^0.2",
+        "quillstack/dotenv": "^0.2",
+        "quillstack/config": "^0.2"
     },
     "autoload": {
         "psr-4": {
@@ -44,10 +44,10 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.1.x-dev"
+            "dev-main": "0.2.x-dev"
         }
     },
     "require-dev": {
-        "quillstack/unit-tests": "^0.4"
+        "quillstack/unit-tests": "^0.5"
     }
 }
