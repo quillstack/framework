@@ -1,6 +1,6 @@
 # Quillstack Framework
 
-[![Build Status](https://app.travis-ci.com/quillstack/framework.svg?branch=main)](https://app.travis-ci.com/quillstack/framework)
+[![Tests](https://github.com/quillstack/framework/actions/workflows/tests.yml/badge.svg)](https://github.com/quillstack/framework/actions/workflows/tests.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=quillstack_framework&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=quillstack_framework)
 [![Downloads](https://img.shields.io/packagist/dt/quillstack/framework.svg)](https://packagist.org/packages/quillstack/framework)
 [![StyleCI](https://github.styleci.io/repos/302737962/shield?branch=main)](https://github.styleci.io/repos/302737962?branch=main)
