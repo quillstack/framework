@@ -6,7 +6,7 @@ namespace Quillstack\Framework\App;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Container\ContainerInterface;
-use Quillstack\Framework\Http\Controllers\NotFoundController;
+use Quillstack\Framework\Http\Controllers\FallbackController;
 use Quillstack\Framework\Http\Middleware\ErrorMiddleware;
 use Quillstack\Framework\Interfaces\RouteProviderInterface;
 use Quillstack\Middleware\MiddlewareBuilder;
@@ -34,10 +34,11 @@ class Kernel
         // Load all middleware classes.
         $middlewareBuilder = $this->loadMiddleware($middleware);
 
-        // Get handler.
-        /** @var NotFoundController $notFound */
-        $notFound = $this->container->get(NotFoundController::class);
-        $handler = $middlewareBuilder->build($notFound);
+        // Get handler. Nothing matched a route ends up here, which is where the difference
+        // between an unknown path and an unknown method is answered.
+        /** @var FallbackController $fallback */
+        $fallback = $this->container->get(FallbackController::class);
+        $handler = $middlewareBuilder->build($fallback);
 
         // Handle request.
         $response = $handler->handle(

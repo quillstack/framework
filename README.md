@@ -320,7 +320,17 @@ other than `production`, the answer describes the exception:
            "exception": "RuntimeException", "file": "...", "line": 16, "trace": ["..."]}}
 ```
 
-A request matching no route is answered with 404.
+There are two ways to match no route, and they are answered differently. An unknown path is
+404. A known path asked with a method it is not registered for is 405, naming what it does
+answer to:
+
+```
+$ curl -i -X POST http://localhost:8000/users/42
+HTTP/1.1 405 Method Not Allowed
+Allow: GET, DELETE
+
+{"error": {"status": 405, "message": "Method Not Allowed", "allowed": ["GET, DELETE"]}}
+```
 
 ### Controllers
 

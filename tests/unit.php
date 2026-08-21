@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    \Quillstack\Framework\Tests\Unit\TestMethodNotAllowed::class,
     \Quillstack\Framework\Tests\Unit\TestNotFound::class,
     \Quillstack\Framework\Tests\Unit\TestErrorHandling::class,
     \Quillstack\Framework\Tests\Unit\TestErrorLogging::class,
