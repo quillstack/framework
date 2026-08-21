@@ -10,6 +10,8 @@ use Quillstack\Dotenv\Dotenv;
 use Quillstack\Framework\App\Config;
 use Quillstack\Framework\App\Kernel;
 use Quillstack\Framework\Exceptions\EnvFileNotFoundException;
+use Quillstack\Framework\Providers\ServiceProvider;
+use Quillstack\Framework\Providers\ServiceProviderRegistryInterface;
 
 class App
 {
@@ -26,6 +28,36 @@ class App
         $this->container = new Container(
             (new Config())->get($configWithEnv)
         );
+
+        $this->bootProviders();
+    }
+
+    /**
+     * Every provider registers what it brings before any of them boots, so a provider can
+     * count on the services of the ones after it.
+     */
+    private function bootProviders(): void
+    {
+        if (!$this->container->has(ServiceProviderRegistryInterface::class)) {
+            return;
+        }
+
+        /** @var ServiceProviderRegistryInterface $registry */
+        $registry = $this->container->get(ServiceProviderRegistryInterface::class);
+        $providers = [];
+
+        foreach ($registry->getProviders() as $class) {
+            /** @var ServiceProvider $provider */
+            $provider = $this->container->get($class);
+            $providers[] = $provider;
+
+            // What the application configured itself wins: addToConfig keeps what is there.
+            $this->container->addToConfig($provider->register());
+        }
+
+        foreach ($providers as $provider) {
+            $provider->boot($this->container);
+        }
     }
 
     /**

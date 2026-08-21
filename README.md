@@ -85,6 +85,73 @@ final class UserController implements ControllerInterface
 }
 ```
 
+### Providers
+
+A provider brings a piece of the application with it. Everything registers before anything
+boots, so a provider can count on the services of the ones after it:
+
+```php
+final class CacheProvider extends ServiceProvider
+{
+    public function register(): array
+    {
+        return [
+            CacheInterface::class => new FileCache(new LocalStorage(), __DIR__ . '/../var/cache'),
+        ];
+    }
+
+    public function boot(ContainerInterface $container): void
+    {
+        $container->get(ListenerProvider::class)->listen(
+            UserRegistered::class,
+            fn (UserRegistered $event) => $container->get(CacheInterface::class)->delete('users.count')
+        );
+    }
+}
+```
+
+The application lists them the way it lists its routes:
+
+```php
+$app = new App(__DIR__ . '/../.env', [
+    RouteProviderInterface::class => RouteProvider::class,
+    ServiceProviderRegistryInterface::class => ServiceProviders::class,
+]);
+```
+
+What the application configured itself wins, so a provider brings defaults rather than
+decisions.
+
+### Middleware
+
+`CorsMiddleware` answers what a browser asks before it will let a page read an API on
+another host. Without it every request from a browser is refused before the application sees
+it:
+
+```php
+$app = new App($env, [
+    CorsMiddleware::class => new CorsMiddleware(
+        origins: ['https://quillstack.com'],
+        credentials: true,
+    ),
+], [
+    CorsMiddleware::class,
+]);
+```
+
+A preflight is answered there and never reaches the application.
+
+`RateLimitMiddleware` counts what one caller asks for and refuses the rest once there has
+been enough of it. The count lives in a PSR-16 cache, so it is shared by however many
+processes are answering:
+
+```php
+RateLimitMiddleware::class => new RateLimitMiddleware($cache, limit: 60, window: 60),
+```
+
+Past the limit the request is answered with 429, and `X-RateLimit-Limit` and
+`X-RateLimit-Remaining` say where the caller stands.
+
 ### Commands
 
 `Console` is what `App` is for a request: the same container, the same configuration, and
