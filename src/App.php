@@ -9,6 +9,7 @@ use Quillstack\DI\Container;
 use Quillstack\Dotenv\Dotenv;
 use Quillstack\Framework\App\Config;
 use Quillstack\Framework\App\Kernel;
+use Quillstack\Framework\Exceptions\EnvFileNotFoundException;
 
 class App
 {
@@ -17,7 +18,7 @@ class App
     public function __construct(string $envPath = '', array $config = [], private array $middleware = [])
     {
         $configWithEnv = $this->getConfigWithEnvPath($envPath, $config);
-        $this->loadEnvIfRequired($configWithEnv);
+        $this->loadEnvIfRequired($envPath, $configWithEnv);
         $this->container = new Container(
             (new Config())->loadEnv()->get($configWithEnv)
         );
@@ -36,13 +37,20 @@ class App
         ], $config);
     }
 
-    private function loadEnvIfRequired(array $configWithEnv = []): void
+    private function loadEnvIfRequired(string $envPath, array $configWithEnv = []): void
     {
+        if ($envPath !== '' && !is_file($envPath)) {
+            throw new EnvFileNotFoundException(
+                "Environment file not found: {$envPath}. Copy `.env.example` to `.env` to create it.",
+                500
+            );
+        }
+
         $container = new Container(
             (new Config())->get($configWithEnv)
         );
-        $dotenv = $container->get(Dotenv::class);
-        $dotenv->load();
+
+        $container->get(Dotenv::class)->load();
     }
 
     public function run(): ResponseInterface

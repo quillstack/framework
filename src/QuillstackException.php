@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace QuillStack\Framework;
+namespace Quillstack\Framework;
 
 use RuntimeException;
 
