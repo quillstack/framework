@@ -1,15 +1,12 @@
 # Quillstack Framework
 
 [![Tests](https://github.com/quillstack/framework/actions/workflows/tests.yml/badge.svg)](https://github.com/quillstack/framework/actions/workflows/tests.yml)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=quillstack_framework&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=quillstack_framework)
+[![Latest Version](https://img.shields.io/packagist/v/quillstack/framework.svg)](https://packagist.org/packages/quillstack/framework)
 [![Downloads](https://img.shields.io/packagist/dt/quillstack/framework.svg)](https://packagist.org/packages/quillstack/framework)
+[![PHP Version](https://img.shields.io/packagist/php-v/quillstack/framework)](https://packagist.org/packages/quillstack/framework)
 [![StyleCI](https://github.styleci.io/repos/302737962/shield?branch=main)](https://github.styleci.io/repos/302737962?branch=main)
 [![CodeFactor](https://www.codefactor.io/repository/github/quillstack/framework/badge)](https://www.codefactor.io/repository/github/quillstack/framework)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=quillstack_framework&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=quillstack_framework)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=quillstack_framework&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=quillstack_framework)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=quillstack_framework&metric=coverage)](https://sonarcloud.io/summary/new_code?id=quillstack_framework)
-![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/quillstack/framework)
-![Packagist License](https://img.shields.io/packagist/l/quillstack/framework)
+[![License](https://img.shields.io/packagist/l/quillstack/framework)](https://github.com/quillstack/framework/blob/main/LICENSE)
 
 The Quillstack Framework, a light and simple micro-framework to build
 the API.
