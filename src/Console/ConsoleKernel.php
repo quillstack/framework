@@ -6,10 +6,12 @@ namespace Quillstack\Framework\Console;
 
 use Psr\Container\ContainerInterface;
 use Quillstack\Framework\Console\Commands\ListCommand;
+use Quillstack\Framework\Console\Commands\MigrateCommand;
 use Quillstack\Framework\Console\Commands\QueueWorkCommand;
 use Quillstack\Framework\Console\Exceptions\CommandNotFoundException;
 use Quillstack\Framework\Services\AppEnvService;
 use Quillstack\Output\OutputInterface;
+use Quillstack\Framework\Database\EntityRegistryInterface;
 use Quillstack\Queue\Queue;
 use Throwable;
 
@@ -59,6 +61,14 @@ class ConsoleKernel
             /** @var CommandInterface $queueWork */
             $queueWork = $this->container->get(QueueWorkCommand::class);
             $commands[] = $queueWork;
+        }
+
+        // Same again for the database: nothing to migrate where the application has said
+        // nothing about entities.
+        if ($this->container->has(EntityRegistryInterface::class)) {
+            /** @var CommandInterface $migrate */
+            $migrate = $this->container->get(MigrateCommand::class);
+            $commands[] = $migrate;
         }
 
         if ($this->container->has(CommandProviderInterface::class)) {

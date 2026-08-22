@@ -37,6 +37,7 @@
         "quillstack/dotenv": "^0.6",
         "quillstack/events": "^0.6",
         "quillstack/middleware": "^0.6",
+        "quillstack/orm": "^0.6",
         "quillstack/output": "^0.6",
         "quillstack/queue": "^0.6",
         "quillstack/response": "^0.6",

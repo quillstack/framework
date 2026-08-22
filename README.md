@@ -152,6 +152,50 @@ RateLimitMiddleware::class => new RateLimitMiddleware($cache, limit: 60, window:
 Past the limit the request is answered with 429, and `X-RateLimit-Limit` and
 `X-RateLimit-Remaining` say where the caller stands.
 
+### Database
+
+Entities describe the tables, so there are no migration files to write and none to keep in
+order. A relation is already a declaration that one column holds another table's id, which is
+all the information needed to index it and constrain it — so nobody writes an index and nobody
+writes a foreign key.
+
+```php
+#[Table('posts')]
+final class Post
+{
+    public function __construct(
+        #[Id] public ?int $id = null,
+        #[Column('user_id')] public ?int $userId = null,
+        #[Column] public string $title = '',
+        #[BelongsTo(User::class, 'user_id')] public readonly Reference $user = new Reference(),
+    ) {
+    }
+}
+```
+
+`src/Providers/EntityRegistry.php` says which entities there are, and the command shows up
+once it does:
+
+```shell
+./bin/quill db:migrate --pretend    # what it would run
+./bin/quill db:migrate              # run it
+```
+
+Nothing is ever removed: a column the entities no longer mention is reported and left alone,
+because a renamed property looks identical to a deleted one.
+
+Reading is where [quillstack/orm](https://github.com/quillstack/orm) earns its keep — touching
+one entity's relation loads it for every entity read beside it, so this is three queries and
+not sixty-one:
+
+```php
+foreach ($users->all() as $user) {
+    foreach ($user->posts as $post) {
+        foreach ($post->comments as $comment) { … }
+    }
+}
+```
+
 ### Queues
 
 Work which does not have to happen while somebody is waiting goes on a queue. A message
