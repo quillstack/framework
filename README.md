@@ -327,10 +327,13 @@ answer to:
 ```
 $ curl -i -X POST http://localhost:8000/users/42
 HTTP/1.1 405 Method Not Allowed
-Allow: GET, DELETE
+Allow: GET, HEAD, DELETE
 
-{"error": {"status": 405, "message": "Method Not Allowed", "allowed": ["GET, DELETE"]}}
+{"error": {"status": 405, "message": "Method Not Allowed", "allowed": ["GET, HEAD, DELETE"]}}
 ```
+
+`HEAD` is in there because a path registered for `GET` answers it: the same controller runs,
+and the server sends the headers without the body.
 
 ### Controllers
 

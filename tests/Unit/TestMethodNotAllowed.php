@@ -59,9 +59,9 @@ class TestMethodNotAllowed
         ]);
 
         $this->assertEqual->equal(405, $response->getStatusCode());
-        $this->assertEqual->equal('GET, DELETE', $response->getHeaderLine('Allow'));
+        $this->assertEqual->equal('GET, HEAD, DELETE', $response->getHeaderLine('Allow'));
         $this->assertEqual->equal(
-            '{"error":{"status":405,"message":"Method Not Allowed","allowed":["GET, DELETE"]}}',
+            '{"error":{"status":405,"message":"Method Not Allowed","allowed":["GET, HEAD, DELETE"]}}',
             json_encode($response)
         );
     }
