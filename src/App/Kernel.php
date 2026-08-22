@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Quillstack\Framework\App;
 
-use Psr\Http\Message\ResponseInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
 use Quillstack\Framework\Http\Controllers\FallbackController;
 use Quillstack\Framework\Http\Middleware\ErrorMiddleware;
 use Quillstack\Framework\Interfaces\RouteProviderInterface;

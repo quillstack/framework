@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Quillstack\Framework;
 
 use Quillstack\DI\Container;
-use Quillstack\Framework\App\Config;
 use Quillstack\Framework\Console\ConsoleKernel;
 use Quillstack\Framework\Console\Input;
 use Quillstack\Output\Colors;

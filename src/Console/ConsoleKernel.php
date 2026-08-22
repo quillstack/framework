@@ -9,9 +9,9 @@ use Quillstack\Framework\Console\Commands\ListCommand;
 use Quillstack\Framework\Console\Commands\MigrateCommand;
 use Quillstack\Framework\Console\Commands\QueueWorkCommand;
 use Quillstack\Framework\Console\Exceptions\CommandNotFoundException;
+use Quillstack\Framework\Database\EntityRegistryInterface;
 use Quillstack\Framework\Services\AppEnvService;
 use Quillstack\Output\OutputInterface;
-use Quillstack\Framework\Database\EntityRegistryInterface;
 use Quillstack\Queue\Queue;
 use Throwable;
 

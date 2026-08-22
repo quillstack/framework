@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Quillstack\Framework\Validation;
 
 use Quillstack\Framework\Validation\Exceptions\UnknownRuleException;
-use Quillstack\Framework\Validation\Rules;
 
 /**
  * Turns a rule written as text, `min:18` or `in:draft,published`, into the object which
