@@ -30,7 +30,7 @@
         "psr/http-server-middleware": "^1.0",
         "psr/log": "^3.0",
         "psr/simple-cache": "^3.0",
-        "quillstack/auth": "^0.7",
+        "quillstack/auth": "^0.8",
         "quillstack/cache": "^0.6",
         "quillstack/cli": "^0.6",
         "quillstack/clock": "^0.6",
@@ -38,14 +38,14 @@
         "quillstack/di": "^0.6",
         "quillstack/dotenv": "^0.7",
         "quillstack/events": "^0.6",
-        "quillstack/middleware": "^0.8",
+        "quillstack/middleware": "^0.9",
         "quillstack/orm": "^0.6",
         "quillstack/output": "^0.6",
         "quillstack/queue": "^0.6",
-        "quillstack/response": "^0.7",
-        "quillstack/router": "^0.7",
+        "quillstack/response": "^0.8",
+        "quillstack/router": "^0.8",
         "quillstack/serializer": "^0.6",
-        "quillstack/server-request": "^0.7"
+        "quillstack/server-request": "^0.8"
     },
     "autoload": {
         "psr-4": {
