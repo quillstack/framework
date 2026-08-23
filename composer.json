@@ -36,7 +36,7 @@
         "quillstack/clock": "^0.6",
         "quillstack/config": "^0.6",
         "quillstack/di": "^0.6",
-        "quillstack/dotenv": "^0.6",
+        "quillstack/dotenv": "^0.7",
         "quillstack/events": "^0.6",
         "quillstack/middleware": "^0.8",
         "quillstack/orm": "^0.6",
