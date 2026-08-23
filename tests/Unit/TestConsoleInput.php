@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Quillstack\Framework\Tests\Unit;
 
-use Quillstack\Framework\Console\Input;
+use Quillstack\Cli\Input;
 use Quillstack\UnitTests\AssertEqual;
 use Quillstack\UnitTests\Types\AssertBoolean;
 use Quillstack\UnitTests\Types\AssertNull;

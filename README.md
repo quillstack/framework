@@ -221,6 +221,11 @@ for the rest.
 
 ### Commands
 
+The command line is [quillstack/cli](https://github.com/quillstack/cli): a command is a class,
+and what it needs it asks for in the constructor.
+
+
+
 `Console` is what `App` is for a request: the same container, the same configuration, and
 the same way of registering what the application brings.
 

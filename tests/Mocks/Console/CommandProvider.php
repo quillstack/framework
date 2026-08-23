@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Quillstack\Framework\Tests\Mocks\Console;
 
-use Quillstack\Framework\Console\CommandProviderInterface;
+use Quillstack\Cli\CommandProviderInterface;
 
 class CommandProvider implements CommandProviderInterface
 {

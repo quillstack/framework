@@ -31,6 +31,7 @@
         "psr/log": "^3.0",
         "psr/simple-cache": "^3.0",
         "quillstack/cache": "^0.6",
+        "quillstack/cli": "^0.6",
         "quillstack/clock": "^0.6",
         "quillstack/config": "^0.6",
         "quillstack/di": "^0.6",

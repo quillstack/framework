@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Quillstack\Framework\Console\Commands;
 
-use Quillstack\Framework\Console\CommandInterface;
-use Quillstack\Framework\Console\Input;
+use Quillstack\Cli\CommandInterface;
+use Quillstack\Cli\Input;
 use Quillstack\Output\OutputInterface;
 use Quillstack\Queue\Queue;
 use Quillstack\Queue\Worker;

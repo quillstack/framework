@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Quillstack\Framework\Tests\Mocks\Console;
 
-use Quillstack\Framework\Console\CommandInterface;
-use Quillstack\Framework\Console\Input;
+use Quillstack\Cli\CommandInterface;
+use Quillstack\Cli\Input;
 use Quillstack\Output\OutputInterface;
 
 class GreetCommand implements CommandInterface

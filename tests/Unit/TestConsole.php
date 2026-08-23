@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Quillstack\Framework\Tests\Unit;
 
 use Quillstack\Framework\Console;
-use Quillstack\Framework\Console\CommandProviderInterface;
+use Quillstack\Cli\CommandProviderInterface;
 use Quillstack\Framework\Tests\Mocks\Console\CommandProvider;
 use Quillstack\Output\Colors;
 use Quillstack\Output\Output;
