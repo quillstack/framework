@@ -8,8 +8,12 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Quillstack\Framework\Http\Controllers\FallbackController;
 use Quillstack\Framework\Http\Middleware\ErrorMiddleware;
+use Quillstack\Auth\IdentityProviderInterface;
+use Quillstack\Auth\Middleware\AuthenticationMiddleware;
+use Quillstack\Framework\Exceptions\NoIdentityProviderException;
 use Quillstack\Framework\Interfaces\RouteProviderInterface;
 use Quillstack\Middleware\MiddlewareBuilder;
+use Quillstack\Router\GuardedRouteInterface;
 use Quillstack\Router\Router;
 use Quillstack\ServerRequest\Factory\ServerRequest\ServerRequestFromGlobalsFactory;
 
@@ -60,6 +64,33 @@ class Kernel
         /** @var RouteProviderInterface $routeProvider */
         $routeProvider = $this->container->get(RouteProviderInterface::class);
         $routeProvider->setRoutes($this->router);
+
+        $this->refuseGuardsNobodyEnforces();
+    }
+
+    /**
+     * A route which says only somebody may reach it, in an application which has not said who
+     * anybody is, would be open while reading as guarded.
+     *
+     * That is the one failure the arrangement exists to prevent, so it is refused here —
+     * before a single request is served, rather than on the first one that should have been
+     * turned away.
+     */
+    private function refuseGuardsNobodyEnforces(): void
+    {
+        if ($this->container->has(IdentityProviderInterface::class)) {
+            return;
+        }
+
+        foreach ($this->router->getRoutes() as $route) {
+            if ($route instanceof GuardedRouteInterface && $route->requiresAuthentication()) {
+                throw new NoIdentityProviderException(
+                    "The route `{$route->getKey()}` requires authentication, and nothing "
+                    . 'answers for `' . IdentityProviderInterface::class . '`. Configure one, '
+                    . 'or the route is open while reading as guarded.'
+                );
+            }
+        }
     }
 
     /**
@@ -106,6 +137,17 @@ class Kernel
         // Whatever the application adds, nothing runs outside the error middleware, or an
         // exception thrown there would reach the client as a fatal error.
         array_unshift($classes, ErrorMiddleware::class);
+
+        // Who a request is from is worked out where the application has said who its users
+        // are, and not otherwise — the same rule as the queue and the entities.
+        //
+        // It goes second: inside the error middleware, so a refusal is answered rather than
+        // thrown, and outside everything else, so a request which is going to be refused is
+        // refused before any work is done for it. Adding it to the end of the list would put
+        // it after routing, which is to say never — routing calls the controller.
+        if ($this->container->has(IdentityProviderInterface::class)) {
+            array_splice($classes, 1, 0, [AuthenticationMiddleware::class]);
+        }
 
         return new MiddlewareBuilder($classes, $this->container);
     }

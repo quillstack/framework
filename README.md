@@ -332,6 +332,42 @@ the written ones:
 A field which was not sent at all is only `required`'s business: every other rule lets it
 through, so `['email']` alone accepts a missing field and rejects a malformed one.
 
+### Authentication
+
+A route says what reaching it requires, and one place enforces it — a rule kept in each
+controller instead is a rule which is one day not kept:
+
+```php
+$router->get('/orders', OrdersController::class)->requireAuthentication();
+$router->delete('/orders/:id', DeleteOrderController::class)->requireAuthentication('admin');
+```
+
+The application says who anybody is, because only it knows where the tokens are:
+
+```php
+use Quillstack\Auth\IdentityProviderInterface;
+
+$app = new App(__DIR__ . '/../.env', [
+    IdentityProviderInterface::class => Users::class,
+]);
+```
+
+Once it does, the middleware is added and every guarded route is enforced. A request from
+nobody is answered `401`; one from somebody without the role is answered `403`.
+
+```php
+use Quillstack\Auth\Middleware\AuthenticationMiddleware;
+
+$identity = AuthenticationMiddleware::identityOf($request);
+```
+
+**A guarded route in an application which has said nothing about identities is refused at
+boot**, before a single request is served — such a route would be open while reading as
+guarded, which is the one failure the whole arrangement exists to prevent.
+
+There is no authorisation middleware in the default stack any more. There was one, and it let
+everything through. See [quillstack/auth](https://github.com/quillstack/auth).
+
 ### Errors
 
 Nothing thrown by the application reaches the client as a fatal error. Throw an HTTP

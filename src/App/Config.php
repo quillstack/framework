@@ -10,7 +10,6 @@ use Quillstack\Config\ConfigProviderInterface;
 use Quillstack\Framework\InstanceFactories\RequestClassFactory;
 use Quillstack\Framework\Interfaces\RequestInterface;
 use Quillstack\Framework\Providers\ConfigProvider;
-use Quillstack\Middleware\Defaults\AuthorizationMiddleware;
 use Quillstack\Middleware\Defaults\JsonResponseMiddleware;
 use Quillstack\Middleware\Defaults\RoutingMiddleware;
 use Quillstack\Middleware\Defaults\TrimStringsMiddleware;
@@ -26,7 +25,6 @@ class Config
         RoutingMiddleware::class,
         JsonResponseMiddleware::class,
         TrimStringsMiddleware::class,
-        AuthorizationMiddleware::class,
     ];
 
     /**

@@ -11,6 +11,7 @@ return [
     \Quillstack\Framework\Tests\Unit\TestValidation::class,
     \Quillstack\Framework\Tests\Unit\TestValidationOverHttp::class,
     \Quillstack\Framework\Tests\Unit\TestConsoleInput::class,
+    \Quillstack\Framework\Tests\Unit\TestAuthentication::class,
     \Quillstack\Framework\Tests\Unit\TestConsole::class,
     \Quillstack\Framework\Tests\Unit\TestQueueCommand::class,
     \Quillstack\Framework\Tests\Unit\TestServiceProviders::class,

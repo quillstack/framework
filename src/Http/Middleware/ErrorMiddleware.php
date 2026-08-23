@@ -10,6 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
+use Quillstack\Auth\Exceptions\AuthException;
 use Quillstack\Framework\Exceptions\Http\HttpException;
 use Quillstack\Framework\Http\Responses\ErrorResponse;
 use Quillstack\Framework\Services\AppEnvService;
@@ -45,6 +46,9 @@ class ErrorMiddleware implements MiddlewareInterface
                 $exception,
                 ['fields' => $exception->getErrors()]
             );
+        } catch (AuthException $exception) {
+            // Refusing is not an error of the application: it is the answer.
+            return $this->respond($exception->getStatusCode(), $exception->getMessage(), $exception);
         } catch (HttpException $exception) {
             return $this->respond($exception->getStatusCode(), $exception->getMessage(), $exception);
         } catch (Throwable $throwable) {
