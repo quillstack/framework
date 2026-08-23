@@ -57,6 +57,101 @@ jobs:
         env:
           SONAR_HOST_URL: https://sonarcloud.io
 
+  benchmark:
+    name: Benchmark
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      - uses: ramsey/composer-install@v3
+
+      - name: Build a small application to measure
+        run: |
+          mkdir -p .benchmark/public
+          cat > .benchmark/public/index.php <<'PHP'
+          <?php
+
+          require __DIR__ . '/../../vendor/autoload.php';
+          require __DIR__ . '/../App.php';
+
+          use Quillstack\Framework\App;
+          use Quillstack\Framework\Interfaces\RouteProviderInterface;
+
+          echo json_encode((new App('', [
+              RouteProviderInterface::class => Benchmark\Routes::class,
+          ]))->run());
+          PHP
+          cat > .benchmark/App.php <<'PHP'
+          <?php
+
+          namespace Benchmark;
+
+          use Psr\Http\Message\ServerRequestInterface;
+          use Quillstack\Framework\Interfaces\ControllerInterface;
+          use Quillstack\Framework\Interfaces\RouteProviderInterface;
+          use Quillstack\Response\Response;
+          use Quillstack\Router\Router;
+
+          final class HelloResponse extends Response
+          {
+              public function send(): array
+              {
+                  return ['hello' => 'world'];
+              }
+          }
+
+          final class HelloController implements ControllerInterface
+          {
+              public function __construct(private readonly HelloResponse $response)
+              {
+              }
+
+              public function handle(ServerRequestInterface $request): HelloResponse
+              {
+                  return $this->response;
+              }
+          }
+
+          final class Routes implements RouteProviderInterface
+          {
+              public function setRoutes(Router $router): void
+              {
+                  $router->get('/', HelloController::class)->name('home');
+                  $router->get('/users/:id', HelloController::class)->name('users.show');
+              }
+          }
+          PHP
+
+      - name: Measure
+        run: |
+          php -S 127.0.0.1:8088 -t .benchmark/public >/dev/null 2>&1 &
+          for i in $(seq 1 40); do curl -sf -o /dev/null http://127.0.0.1:8088/ && break; sleep 0.25; done
+
+          curl -sf -o /dev/null http://127.0.0.1:8088/ || { echo "The application did not answer"; exit 1; }
+
+          result=$(vendor/bin/benchmark benchmark:http:get http://127.0.0.1:8088/users/42 200 10)
+          echo "$result"
+
+          # A number, or the measurement did not happen — an empty one reads like a fast one.
+          echo "$result" | grep -qE '[0-9]+\.[0-9]+ requests per second' \
+            || { echo "Nothing was measured"; exit 1; }
+
+          {
+            echo '### Benchmark'
+            echo
+            echo '```text'
+            echo "$result"
+            echo '```'
+            echo
+            echo '_Shared CI runners are noisy, so this is a number to read rather than a gate.'
+            echo 'Compare runs on the same machine before believing a change._'
+          } >> "$GITHUB_STEP_SUMMARY"
+
   static-analysis:
     name: Static analysis
     runs-on: ubuntu-latest

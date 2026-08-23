@@ -4,4 +4,4 @@
 /vendor/
 composer.phar
 composer.lock
-unit-tests.coverage.xml
+unit-tests.coverage.xml/.benchmark/
