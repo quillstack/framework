@@ -16,7 +16,27 @@
 The Quillstack Framework, a light and simple micro-framework to build
 the API.
 
-### Getting started
+## Why this exists
+
+Two frameworks are pleasant to build an API with, and both make you take a great deal you did
+not ask for. Two are rigorous about their internals, and both make you read a book first. This
+was written to find out whether that trade is real.
+
+What holds it together is that **every part of it works without the rest**. The router, the
+container, the ORM, the HTTP client — each is a package with its own tests, usable in somebody
+else's application, and none of them depends on this one. What this adds is the wiring: a kernel,
+a middleware stack, error handling that never lets a fatal reach the client, and a console.
+
+The whole stack contains **no third-party implementations** — the only outside code anywhere in
+it is the PSR interfaces. That is not a boast about invented wheels; it is what lets an N+1
+query be impossible rather than discouraged, and a guarded route refuse to boot rather than
+quietly let everyone through.
+
+## Requirements
+
+- PHP 8.1 or newer
+
+## Installation
 
 The quickest way to start is the application skeleton:
 
@@ -31,6 +51,8 @@ To add the framework to an existing project:
 ```shell
 composer require quillstack/framework
 ```
+
+## Usage
 
 ### An application
 
@@ -459,7 +481,39 @@ final class UserController implements ControllerInterface
 
 Anything else belongs in the constructor.
 
-### Unit tests
+## Benchmark
+
+Measured with [quillstack/benchmark](https://github.com/quillstack/benchmark) on sixteen routes,
+answering `GET /projects/42` with a JSON body, once per process — which is what a PHP request
+does. All three return the same status and the same body. Runs are interleaved and unconcurrent,
+each figure is the median of five, and PHP is 8.5.7.
+
+| | Version |
+| --- | --- |
+| quillstack/framework | v0.13.0 |
+| slim/slim | 4.15.2 |
+| mezzio/mezzio | 3.28.1 |
+
+| | Per request | Relative | Files loaded | Memory |
+| --- | --- | --- | --- | --- |
+| mezzio/mezzio | 2.38 ms | 0.69× | 44 | 544 kB |
+| slim/slim | 3.36 ms | 0.98× | 66 | 750 kB |
+| **quillstack/framework** | **3.44 ms** | — | 73 | 773 kB |
+
+**This one is third**, and level with Slim to within three per cent.
+
+The comparison is not quite like for like, and in this one's favour it should be said which way:
+the Mezzio pipeline here is a router and a dispatcher and nothing else, and the Slim application
+has no error middleware. The Quillstack figure is a whole `App` — reading configuration,
+building a container, assembling the middleware stack, and wiring error handling that turns
+anything thrown into a response. **Take those away and the numbers would move; they are in
+because that is what booting this framework is.**
+
+A millisecond between frameworks is not what decides an API's response time — a single database
+query costs more. What these numbers are good for is knowing that none of the three is doing
+anything foolish.
+
+## Tests
 
 Run tests using a command:
 
@@ -467,9 +521,15 @@ Run tests using a command:
 phpdbg -qrr ./vendor/bin/unit-tests
 ```
 
-### Docker
+## The rest of Quillstack
 
-```shell
-$ docker-compose up -d
-$ docker exec -w /var/www/html -it quillstack_framework sh
-```
+Every one of these works without this framework, and this framework is what wires them together.
+
+- [quillstack/router](https://github.com/quillstack/router) — matching a request to a controller
+- [quillstack/di](https://github.com/quillstack/di) — building what a controller asks for
+- [quillstack/orm](https://github.com/quillstack/orm) — where an N+1 query cannot be written
+- [quillstack/quillstack](https://github.com/quillstack/quillstack) — the skeleton to start from
+
+## License
+
+MIT — see [LICENSE](https://github.com/quillstack/framework/blob/main/LICENSE).
