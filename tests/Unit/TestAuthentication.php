@@ -142,4 +142,33 @@ class TestAuthentication
     {
         $this->assertEqual->equal(404, $this->ask('/nowhere')->getStatusCode());
     }
+
+    /**
+     * A refusal says the status and what it means, and nothing else — not even while
+     * developing. Whoever failed to get in is the last person to be shown the file names and
+     * the middleware chain.
+     */
+    public function aRefusalNeverDescribesTheInternals()
+    {
+        $_ENV['APP_ENV'] = $_SERVER['APP_ENV'] = 'develop';
+        $_SERVER = [
+            'REQUEST_METHOD' => 'GET',
+            'HTTP_HOST' => 'localhost',
+            'REQUEST_URI' => '/private',
+            'SERVER_PROTOCOL' => '1.1',
+            'APP_ENV' => 'develop',
+        ];
+
+        $response = (new App('', [
+            RouteProviderInterface::class => GuardedRouteProvider::class,
+            IdentityProviderInterface::class => Users::class,
+        ]))->run();
+
+        $body = (string) json_encode($response);
+
+        $this->assertEqual->equal(401, $response->getStatusCode());
+        $this->assertEqual->equal('{"error":{"status":401,"message":"Not authenticated"}}', $body);
+        $this->assertBoolean->isFalse(str_contains($body, 'trace'));
+        $this->assertBoolean->isFalse(str_contains($body, 'Middleware.php'));
+    }
 }

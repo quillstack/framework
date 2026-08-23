@@ -47,13 +47,26 @@ class ErrorMiddleware implements MiddlewareInterface
                 ['fields' => $exception->getErrors()]
             );
         } catch (AuthException $exception) {
-            // Refusing is not an error of the application: it is the answer.
-            return $this->respond($exception->getStatusCode(), $exception->getMessage(), $exception);
+            // Refusing is not an error of the application: it is the answer. Nothing about
+            // the internals goes with it even while developing — whoever failed to get in is
+            // the last person to be shown the file names and the middleware chain.
+            return $this->answer($exception->getStatusCode(), $exception->getMessage());
         } catch (HttpException $exception) {
             return $this->respond($exception->getStatusCode(), $exception->getMessage(), $exception);
         } catch (Throwable $throwable) {
             return $this->respond(StatusCode::INTERNAL_SERVER_ERROR, '', $throwable);
         }
+    }
+
+    /**
+     * An answer which is not an error: the status and what it means, and nothing else,
+     * wherever the application is running.
+     */
+    private function answer(int $status, string $message): ResponseInterface
+    {
+        return (new ErrorResponse($status))
+            ->setError($message)
+            ->withHeader('Content-Type', 'text/json');
     }
 
     /**
