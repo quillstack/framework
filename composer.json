@@ -44,6 +44,7 @@
         "quillstack/queue": "^0.6",
         "quillstack/response": "^0.7",
         "quillstack/router": "^0.7",
+        "quillstack/serializer": "^0.6",
         "quillstack/server-request": "^0.7"
     },
     "autoload": {
