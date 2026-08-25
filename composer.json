@@ -41,7 +41,7 @@
         "quillstack/middleware": "^0.9",
         "quillstack/orm": "^0.6",
         "quillstack/output": "^0.6",
-        "quillstack/queue": "^0.6",
+        "quillstack/queue": "^0.7",
         "quillstack/response": "^0.8",
         "quillstack/router": "^0.8",
         "quillstack/serializer": "^0.6",
