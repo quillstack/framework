@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Quillstack\Framework\Http\Responses;
 
+use Quillstack\Framework\Http\Responses\Attributes\Serializes;
+use Quillstack\Framework\Http\Responses\Exceptions\WrongTypeSerializedException;
 use Quillstack\Response\Response;
 use Quillstack\Serializer\Serializer;
+use ReflectionClass;
 
 /**
  * A response which carries an object rather than a written-out array.
@@ -29,9 +32,49 @@ abstract class SerializedResponse extends Response
      */
     public function with(object|iterable $data): static
     {
+        $this->check($data);
+
         $this->data = $data;
 
         return $this;
+    }
+
+    /**
+     * The class this response says it carries, or null where it does not say.
+     *
+     * @return ?class-string
+     */
+    public static function serializes(): ?string
+    {
+        $attributes = (new ReflectionClass(static::class))->getAttributes(Serializes::class);
+
+        return $attributes === [] ? null : $attributes[0]->newInstance()->class;
+    }
+
+    /**
+     * A response which says what it carries is held to it. Without this the attribute would be
+     * documentation, and documentation which is not used is documentation which is wrong.
+     *
+     * @param object|iterable<int, object> $data
+     */
+    private function check(object|iterable $data): void
+    {
+        $expected = static::serializes();
+
+        if ($expected === null) {
+            return;
+        }
+
+        foreach (is_object($data) ? [$data] : $data as $item) {
+            if (!$item instanceof $expected) {
+                throw new WrongTypeSerializedException(sprintf(
+                    '%s carries %s, and was handed %s',
+                    static::class,
+                    $expected,
+                    get_debug_type($item)
+                ));
+            }
+        }
     }
 
     /**

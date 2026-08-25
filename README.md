@@ -390,6 +390,77 @@ guarded, which is the one failure the whole arrangement exists to prevent.
 There is no authorisation middleware in the default stack any more. There was one, and it let
 everything through. See [quillstack/auth](https://github.com/quillstack/auth).
 
+### Describing the API
+
+An OpenAPI document is usually a second description of the application, kept beside the first
+one and true for about a week. This one is worked out from what the application already says:
+
+```shell
+./bin/quill openapi:generate --title="Orders" --server=https://api.example.com --out=public/openapi.json
+```
+
+| In the document | Where it came from |
+| --- | --- |
+| paths and methods | the routes |
+| `{id}` parameters | the `:id` in the path |
+| `operationId` | the route's name |
+| `summary` | the sentence above `handle()` |
+| security, and `401`/`403` | `requireAuthentication()` on the route |
+| the request body, and `422` | the `#[Accepts]` the validator reads |
+| the response schema | what the response says it carries, and what that class exposes |
+
+Two of those have to be said, because the code did not say them anywhere before. A response
+declares what it carries:
+
+```php
+use Quillstack\Framework\Http\Responses\Attributes\Serializes;
+
+#[Serializes(User::class)]
+final class UserResponse extends SerializedResponse
+{
+}
+```
+
+and a handler declares what it accepts:
+
+```php
+use Quillstack\Framework\Validation\Attributes\Accepts;
+
+/**
+ * Takes a person and keeps them.
+ */
+#[Accepts([
+    'email' => ['required', 'email'],
+    'age' => ['required', 'integer', 'min:18'],
+    'plan' => ['required', 'in:free,pro'],
+])]
+public function handle(ServerRequestInterface $request): UserResponse
+{
+    $data = $this->validator->of($request, $this);
+
+    // …
+}
+```
+
+**Both are load-bearing, which is the point.** `with()` refuses an object the response did not
+say it carries, and `of()` validates against the rules the document describes — so there is one
+list, and it is the one that decides. An attribute which only documented would be wrong the
+first time somebody changed one and not the other, and then it is worse than nothing, because
+it is believed.
+
+What is not declared is left out rather than guessed at. A response which says nothing about
+what it carries gets a `200` with no schema; a handler with no `#[Accepts]` gets no request
+body. A document which is partly invented is worse than a short one, because there is no way to
+tell which half is which.
+
+The fields are the ones the serializer would send, read from where it reads them — so a
+`password` column nobody exposed is absent from the document for the same reason it is absent
+from the answer. A response for administrators gets a schema of its own, because it is a
+different set of fields.
+
+The output passes [Redocly](https://redocly.com/docs/cli)'s full recommended ruleset with
+nothing to report, which is checked rather than claimed.
+
 ### Errors
 
 Nothing thrown by the application reaches the client as a fatal error. Throw an HTTP

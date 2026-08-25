@@ -9,8 +9,10 @@ use Quillstack\Cli\ConsoleKernel;
 use Quillstack\Cli\Input;
 use Quillstack\DI\Container;
 use Quillstack\Framework\Console\Commands\MigrateCommand;
+use Quillstack\Framework\Console\Commands\OpenApiCommand;
 use Quillstack\Framework\Console\Commands\QueueWorkCommand;
 use Quillstack\Framework\Database\EntityRegistryInterface;
+use Quillstack\Framework\Interfaces\RouteProviderInterface;
 use Quillstack\Framework\Services\AppEnvService;
 use Quillstack\Output\Colors;
 use Quillstack\Output\Output;
@@ -76,9 +78,10 @@ class Console
     /**
      * The framework's own commands, each where it applies.
      *
-     * Working a queue only makes sense where there is one, and migrating only where the
-     * application has said what its entities are — so each shows up once it does and not
-     * before. The container can answer that because `has()` says what it means.
+     * Working a queue only makes sense where there is one, migrating only where the
+     * application has said what its entities are, and describing an API only where there are
+     * routes to describe — so each shows up once it does and not before. The container can
+     * answer that because `has()` says what it means.
      *
      * @return array<int, class-string<CommandInterface>>
      */
@@ -92,6 +95,10 @@ class Console
 
         if ($this->container->has(EntityRegistryInterface::class)) {
             $commands[] = MigrateCommand::class;
+        }
+
+        if ($this->container->has(RouteProviderInterface::class)) {
+            $commands[] = OpenApiCommand::class;
         }
 
         return $commands;

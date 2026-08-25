@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Quillstack\Framework\Validation;
 
+use Psr\Http\Message\ServerRequestInterface;
+use Quillstack\Framework\Validation\Attributes\Accepts;
 use Quillstack\Framework\Validation\Exceptions\ValidationFailedException;
 use Quillstack\ValidatorInterface\ValidatorInterface;
+use ReflectionClass;
 
 /**
  * Checks what was sent against a list of rules per field. Everything that failed is
@@ -39,6 +42,40 @@ class Validator implements ValidatorInterface
         $validator->rules = $rules;
 
         return $validator;
+    }
+
+    /**
+     * What a request may hold, according to the `#[Accepts]` on the method handling it.
+     *
+     * @param class-string|object $controller
+     *
+     * @return array<string, mixed>
+     *
+     * @throws ValidationFailedException
+     */
+    public function of(ServerRequestInterface $request, string|object $controller, string $method = 'handle'): array
+    {
+        return $this->check((array) $request->getParsedBody(), self::rulesOf($controller, $method));
+    }
+
+    /**
+     * The rules a method declares, or none where it declares none.
+     *
+     * @param class-string|object $controller
+     *
+     * @return array<string, array<int, RuleInterface|string>>
+     */
+    public static function rulesOf(string|object $controller, string $method = 'handle'): array
+    {
+        $reflection = new ReflectionClass($controller);
+
+        if (!$reflection->hasMethod($method)) {
+            return [];
+        }
+
+        $attributes = $reflection->getMethod($method)->getAttributes(Accepts::class);
+
+        return $attributes === [] ? [] : $attributes[0]->newInstance()->rules;
     }
 
     /**
