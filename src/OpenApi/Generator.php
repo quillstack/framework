@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Quillstack\Framework\OpenApi;
 
 use Quillstack\Framework\Http\Responses\SerializedResponse;
+use Psr\Http\Message\ResponseInterface;
 use Quillstack\Framework\Validation\Validator;
+use Quillstack\Response\StatusCode;
 use Quillstack\Router\GuardedRouteInterface;
 use Quillstack\Router\RouteInterface;
 use Quillstack\Router\RouterInterface;
@@ -202,16 +204,34 @@ final class Generator
      */
     private function responses(RouteInterface $route, string $controller): array
     {
-        $ok = ['description' => 'OK'];
-        $schema = $this->responseSchema($controller);
+        [$status, $schema] = $this->success($controller);
 
-        if ($schema !== null) {
-            $ok['content'] = ['application/json' => ['schema' => $schema]];
+        $answer = ['description' => StatusCode::reasonPhrase($status)];
+
+        // A 204 says there is no body, and describing one would contradict the status.
+        if ($schema !== null && $status !== StatusCode::NO_CONTENT) {
+            $answer['content'] = ['application/json' => ['schema' => $schema]];
         }
 
-        $responses = ['200' => $ok];
+        $responses = [(string) $status => $answer];
+
+        // What the handler says it throws. A DELETE on something which is not there answers
+        // 404, and the controller already says so — this reads it rather than asking for it
+        // to be said again.
+        if (class_exists($controller)) {
+            $reflection = new ReflectionClass($controller);
+
+            if ($reflection->hasMethod('handle')) {
+                foreach (Throws::of($reflection->getMethod('handle')) as $thrown => $means) {
+                    $responses[(string) $thrown] = ['description' => $means];
+                }
+            }
+        }
 
         if (class_exists($controller) && Validator::rulesOf($controller) !== []) {
+            // Anything taking a body can be sent one that is not JSON, and the middleware
+            // which reads it answers 400 rather than passing on an empty body.
+            $responses['400'] = ['description' => 'The request body is not valid JSON'];
             $responses['422'] = ['description' => 'The given data was invalid'];
         }
 
@@ -226,6 +246,74 @@ final class Generator
         ksort($responses);
 
         return $responses;
+    }
+
+    /**
+     * What a handler answers with when it works: the status its response was built to carry,
+     * and the schema where it carries one.
+     *
+     * The status is read rather than assumed. `EmptyResponse` was built to answer 204, and a
+     * document saying 200 would be describing an answer nobody gets.
+     *
+     * @return array{0: int, 1: ?array<string, mixed>}
+     */
+    private function success(string $controller): array
+    {
+        $response = self::responseOf($controller);
+
+        if ($response === null) {
+            return [StatusCode::OK, null];
+        }
+
+        return [self::statusOf($response), $this->responseSchema($controller)];
+    }
+
+    /**
+     * The status a response class was built to carry, where it can be built to ask.
+     *
+     * @param class-string $response
+     */
+    private static function statusOf(string $response): int
+    {
+        $reflection = new ReflectionClass($response);
+        $constructor = $reflection->getConstructor();
+
+        if ($constructor !== null && $constructor->getNumberOfRequiredParameters() > 0) {
+            return StatusCode::OK;
+        }
+
+        $built = $reflection->newInstance();
+
+        return $built instanceof ResponseInterface ? $built->getStatusCode() : StatusCode::OK;
+    }
+
+    /**
+     * The response class a handler returns, where it returns one.
+     *
+     * @return ?class-string
+     */
+    private static function responseOf(string $controller): ?string
+    {
+        if (!class_exists($controller)) {
+            return null;
+        }
+
+        $reflection = new ReflectionClass($controller);
+
+        if (!$reflection->hasMethod('handle')) {
+            return null;
+        }
+
+        $type = $reflection->getMethod('handle')->getReturnType();
+
+        if (!$type instanceof ReflectionNamedType || !class_exists($type->getName())) {
+            return null;
+        }
+
+        /** @var class-string $name */
+        $name = $type->getName();
+
+        return $name;
     }
 
     /**

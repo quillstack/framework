@@ -10,6 +10,7 @@ use Quillstack\Config\ConfigProviderInterface;
 use Quillstack\Framework\InstanceFactories\RequestClassFactory;
 use Quillstack\Framework\Interfaces\RequestInterface;
 use Quillstack\Framework\Providers\ConfigProvider;
+use Quillstack\Framework\Http\Middleware\JsonBodyMiddleware;
 use Quillstack\Middleware\Defaults\JsonResponseMiddleware;
 use Quillstack\Middleware\Defaults\RoutingMiddleware;
 use Quillstack\Middleware\Defaults\TrimStringsMiddleware;
@@ -25,6 +26,9 @@ class Config
         RoutingMiddleware::class,
         JsonResponseMiddleware::class,
         TrimStringsMiddleware::class,
+        // Last is outermost, so the body is read before anything looks at it — trimming
+        // included.
+        JsonBodyMiddleware::class,
     ];
 
     /**

@@ -126,12 +126,22 @@ class TestOpenApi
         $this->assertBoolean->isFalse(isset($properties['name']['maximum']));
     }
 
-    public function anEndpointWhichValidatesCanAnswer422()
+    /**
+     * Anything taking a body can be sent one that is not JSON, and the middleware which reads
+     * it answers 400 — so an operation with a request body has both.
+     */
+    public function anEndpointWhichValidatesCanAnswer400And422()
     {
         $document = $this->document();
+        $post = $document['paths']['/people']['post']['responses'];
 
-        $this->assertEqual->equal('The given data was invalid', $document['paths']['/people']['post']['responses'][422]['description']);
-        $this->assertBoolean->isFalse(isset($document['paths']['/people/{id}']['get']['responses'][422]));
+        $this->assertEqual->equal('The given data was invalid', $post[422]['description']);
+        $this->assertEqual->equal('The request body is not valid JSON', $post[400]['description']);
+
+        $get = $document['paths']['/people/{id}']['get']['responses'];
+
+        $this->assertBoolean->isFalse(isset($get[422]));
+        $this->assertBoolean->isFalse(isset($get[400]));
     }
 
     /**

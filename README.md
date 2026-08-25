@@ -305,6 +305,21 @@ Colours are written only when the output is a terminal, so a command piped into 
 writes the text alone. A command which throws is reported the way a request is: the message,
 and outside production the exception with it.
 
+### Request bodies
+
+A JSON body is read into the parsed body, so `getParsedBody()` has what was sent:
+
+```php
+$request->getParsedBody();   // ['email' => 'radek@quillstack.com']
+```
+
+PHP fills `$_POST` from a form-encoded body and from nothing else, so this is not something a
+PSR-7 request does on its own — and without it an API is handed nothing at all by every client
+that sends it JSON. `application/vnd.thing+json` counts, and so does a charset.
+
+A body which is not valid JSON is a `400` saying so, rather than an empty body and a validation
+error naming fields the caller did in fact send.
+
 ### Validation
 
 Ask the validator what the request may hold. What comes back is only the fields there were
@@ -405,8 +420,10 @@ one and true for about a week. This one is worked out from what the application 
 | `{id}` parameters | the `:id` in the path |
 | `operationId` | the route's name |
 | `summary` | the sentence above `handle()` |
+| the success status | what the response was built to carry — `EmptyResponse` is a `204` |
 | security, and `401`/`403` | `requireAuthentication()` on the route |
-| the request body, and `422` | the `#[Accepts]` the validator reads |
+| the request body, and `400`/`422` | the `#[Accepts]` the validator reads |
+| other statuses | the `@throws` on `handle()`, since every HTTP exception carries one |
 | the response schema | what the response says it carries, and what that class exposes |
 
 Two of those have to be said, because the code did not say them anywhere before. A response
@@ -447,6 +464,10 @@ say it carries, and `of()` validates against the rules the document describes �
 list, and it is the one that decides. An attribute which only documented would be wrong the
 first time somebody changed one and not the other, and then it is worse than nothing, because
 it is believed.
+
+A `DELETE` on something which is not there answers `404`, and the controller already says so
+by throwing `NotFoundHttpException` — writing `@throws NotFoundHttpException` above `handle()`
+is what puts it in the document. Nothing new to learn, and nothing said twice.
 
 What is not declared is left out rather than guessed at. A response which says nothing about
 what it carries gets a `200` with no schema; a handler with no `#[Accepts]` gets no request

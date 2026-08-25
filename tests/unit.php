@@ -5,6 +5,7 @@ declare(strict_types=1);
 return [
     \Quillstack\Framework\Tests\Unit\TestSerializedResponse::class,
     \Quillstack\Framework\Tests\Unit\TestOpenApi::class,
+    \Quillstack\Framework\Tests\Unit\TestJsonBody::class,
     \Quillstack\Framework\Tests\Unit\TestMethodNotAllowed::class,
     \Quillstack\Framework\Tests\Unit\TestMigrateCommand::class,
     \Quillstack\Framework\Tests\Unit\TestNotFound::class,
